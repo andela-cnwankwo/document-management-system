@@ -1,0 +1,37 @@
+{
+  "name": "document-management-system",
+  "version": "1.0.0",
+  "description": "Document management system to manage documents, users and user roles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-cnwankwo/document-management-system.git"
+  },
+  "keywords": [
+    "document-management"
+  ],
+  "author": "Ethan Nwankwo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andela-cnwankwo/document-management-system/issues"
+  },
+  "homepage": "https://github.com/andela-cnwankwo/document-management-system#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.1.2"
+  },
+  "dependencies": {
+    "codeclimate-test-reporter": "^0.4.0",
+    "coveralls": "^2.11.15",
+    "istanbul": "^0.4.5",
+    "pg": "^6.1.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.27.0"
+  }
+}
