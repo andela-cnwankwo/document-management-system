@@ -4,7 +4,8 @@
   "description": "Document management system to manage documents, users and user roles.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node settings/server.js"
   },
   "repository": {
     "type": "git",
@@ -27,8 +28,10 @@
     "mocha": "^3.1.2"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
     "codeclimate-test-reporter": "^0.4.0",
     "coveralls": "^2.11.15",
+    "express": "^4.14.0",
     "istanbul": "^0.4.5",
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
