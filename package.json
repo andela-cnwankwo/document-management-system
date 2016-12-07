@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/andela-cnwankwo/document-management-system#readme",
   "devDependencies": {
+    "babel-preset-latest": "^6.16.0",
     "chai": "^3.5.0",
     "eslint": "^3.10.2",
     "eslint-config-airbnb-base": "^10.0.1",
@@ -28,6 +29,7 @@
     "mocha": "^3.1.2"
   },
   "dependencies": {
+    "babel-core": "^6.18.2",
     "body-parser": "^1.15.2",
     "codeclimate-test-reporter": "^0.4.0",
     "coveralls": "^2.11.15",
