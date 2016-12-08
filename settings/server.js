@@ -2,6 +2,7 @@ require('./connect');
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const router = require('../server/routes/routes');
 
 // Initialize express app
 const app = express();
@@ -15,12 +16,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Define a default route
-app.get('/', (req, res) => {
-  return (res.status(200))
-    ? res.status(200).send({ message: 'Welcome to the Document Management App!'})
-    : res.status(404);
-});
+app.use('/', router);
 
 module.exports = app;
 
