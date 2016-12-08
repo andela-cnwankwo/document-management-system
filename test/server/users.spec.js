@@ -3,14 +3,40 @@
 // const Document = require('../../server/methods/document-management.js');
 // const docMgt = new Document();
 
-import { expect } from 'chai';
-import request from 'supertest';
-import factory from '../factory';
-import app from '../../settings/server';
-import { sequelize } from '../test-helper';
+const expect = require('chai').expect;
+const request = require('supertest');
+const factory = require('../factory');
+const app = require('../../settings/server');
+const sequelize = require('../test-helper');
 
 describe('Document Management System', () => {
-  // describe('User', () => {
+  before((done) => {
+    sequelize.sync().then(() => {
+      done();
+    });
+  });
+
+  describe('User', () => {
+    it('should create a new user when given the correct details', (done) => {
+      const user = factory.buildSync('user');
+      request(app).post('/users').send({ user }).expect(200)
+        .then((res) => {
+          expect(res.body.user).to.be.an('object');
+          done();
+        });
+    });
+
+    it('should not create a user that already exists', (done) => {
+      const user = factory.buildSync('user');
+      request(app).post('/users').send({ user }).expect(200)
+        .then(() => {
+          request(app).post('/users').send({ user }).expect(400)
+            .then((res) => {
+              expect(res.body.message).to.equal('User already exists');
+              done();
+            });
+        });
+    });
 
   //   it('Should create a new unique user', () => {
   //     docMgt.createUser(newUser.user);
@@ -26,7 +52,7 @@ describe('Document Management System', () => {
   //   it('Should return all users when requested by the admin', () => {
   //     expect(docMgt.getAllUsers()).not.to.be.false;
   //   });
-  // });
+  });
   // describe('Role', () => {
 
   // });
