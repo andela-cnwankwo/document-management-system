@@ -1,5 +1,5 @@
 {
-    "development": {
+  "development": {
       "username": "node",
       "password": "node",
       "database": "dms",
@@ -10,9 +10,16 @@
     "test": {
       "username": "node",
       "password": "node",
-      "database": "dms",
+      "database": "testdms",
       "host": "127.0.0.1",
       "port": "5432",
       "dialect": "postgres"
-    }
+    },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
 }

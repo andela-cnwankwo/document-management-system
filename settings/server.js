@@ -1,13 +1,13 @@
 require('./connect');
 const express = require('express');
-
-const app = express();
 const bodyParser = require('body-parser');
+const logger = require('morgan');
 
-// Check if this is a test environment and set the port as random(undefined)
-const port = (process.env.NODE_ENV === 'test')
-  ? process.env.PORT || 3000
-  : undefined;
+// Initialize express app
+const app = express();
+
+// log requests to the console
+app.use(logger('dev'));
 
 // Configure bodyParser to allow us get data from a post.
 app.use(bodyParser.urlencoded({
@@ -17,9 +17,13 @@ app.use(bodyParser.json());
 
 // Define a default route
 app.get('/', (req, res) => {
-  res.send('Welcome!');
+  res.status(200).send({
+    message: 'Welcome to the Document Management App!'
+  });
 });
 
-app.listen(port);
-console.log(`App started, listening on port ${port}`);
+// app.listen(port);
+// console.log(`App started, listening on port ${port}`);
+
+module.exports = app;
 
