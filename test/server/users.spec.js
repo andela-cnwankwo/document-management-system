@@ -6,7 +6,7 @@
 const expect = require('chai').expect;
 const request = require('supertest');
 const factory = require('../factory');
-const app = require('../../settings/server');
+const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
 
 describe('Document Management System', () => {
@@ -18,8 +18,8 @@ describe('Document Management System', () => {
 
   describe('User', () => {
     it('should create a new user when given the correct details', (done) => {
-      const user = factory.buildSync('user');
-      request(app).post('/users').send({ user }).expect(200)
+      const user = factory.createFakeUser();
+      request(server).post('/users').send({ user }).expect(200)
         .then((res) => {
           expect(res.body.user).to.be.an('object');
           done();
@@ -27,10 +27,10 @@ describe('Document Management System', () => {
     });
 
     it('should not create a user that already exists', (done) => {
-      const user = factory.buildSync('user');
-      request(app).post('/users').send({ user }).expect(200)
+      const user = factory.createFakeUser();
+      request(server).post('/users').send({ user }).expect(200)
         .then(() => {
-          request(app).post('/users').send({ user }).expect(400)
+          request(server).post('/users').send({ user }).expect(400)
             .then((res) => {
               expect(res.body.message).to.equal('User already exists');
               done();

@@ -17,13 +17,10 @@ app.use(bodyParser.json());
 
 // Define a default route
 app.get('/', (req, res) => {
-  res.status(200).send({
-    message: 'Welcome to the Document Management App!'
-  });
+  return (res.status(200))
+    ? res.status(200).send({ message: 'Welcome to the Document Management App!'})
+    : res.status(404);
 });
-
-// app.listen(port);
-// console.log(`App started, listening on port ${port}`);
 
 module.exports = app;
 

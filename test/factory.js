@@ -1,16 +1,16 @@
-const bluebird = require('bluebird');
-const factoryGirl = require('factory-girl');
+// const bluebird = require('bluebird');
+// const factoryGirl = require('factory-girl');
+const sequelize = require('./test-helper');
 const faker = require('faker');
-const User = require('../app/models/User');
+const User = require('../app/models/user');
 
-const factory = factoryGirl.promisify(bluebird);
+// const factory = factoryGirl.promisify(bluebird);
 
-factory.define('user', User, {
+module.exports.createFakeUser = () => sequelize.define('user', User, {
+  userId: () => faker.random.uuid(),
   firstname: () => faker.name.firstName(),
   lastname: () => faker.name.lastName(),
-  username: () => faker.internet.userName(),
+  email: () => faker.internet.email(),
   password: () => faker.internet.password(),
   role: () => faker.name.jobTitle
 });
-
-module.exports = factory;
