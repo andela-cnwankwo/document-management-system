@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     role: DataTypes.STRING
   }, {
     classMethods: {
-      associate (models) {
+      associate(models) {
         // associations can be defined here
       }
     }

@@ -1,13 +1,10 @@
-// const expect = require('chai').expect;
-// const User = require('../../server/models/user');
-// const Document = require('../../server/methods/document-management.js');
-// const docMgt = new Document();
-
 const expect = require('chai').expect;
 const request = require('supertest');
 const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
+
+let fakeUser;
 
 describe('Document Management System', () => {
   before((done) => {
@@ -16,21 +13,23 @@ describe('Document Management System', () => {
     });
   });
 
+  beforeEach(() => {
+    fakeUser = factory.createUser();
+  });
+
   describe('User', () => {
-    it('should create a new user when given the correct details', (done) => {
-      const user = factory.createFakeUser();
-      request(server).post('/users').send({ user }).expect(200)
+    it('should create a new user', (done) => {
+      request(server).post('/create-user').send({ user: fakeUser }).expect(200)
         .then((res) => {
-          expect(res.body.user).to.be.an('object');
+          expect(res.body.message).to.equal('New User Created!');
           done();
         });
     });
 
     it('should not create a user that already exists', (done) => {
-      const user = factory.createFakeUser();
-      request(server).post('/users').send({ user }).expect(200)
+      request(server).post('/create-user').send({ user: fakeUser }).expect(200)
         .then(() => {
-          request(server).post('/users').send({ user }).expect(400)
+          request(server).post('/create-user').send({ user: fakeUser }).expect(400)
             .then((res) => {
               expect(res.body.message).to.equal('User already exists');
               done();
