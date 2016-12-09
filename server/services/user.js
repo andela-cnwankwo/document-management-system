@@ -23,3 +23,12 @@ module.exports.createUser = (req, done) => {
   })
     .spread((user, created) => done(created));
 };
+
+module.exports.getUser = (req, done) => {
+  User.find({
+    where: {
+      email: req.user.email
+    }
+  }).then(data => done(data))
+  .catch(() => false);
+};
