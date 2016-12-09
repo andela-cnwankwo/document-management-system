@@ -7,7 +7,7 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database testdms;' -U node -P node
+  - psql -c 'create database travis_ci_test;' -U postgres
 
 after_script:
   - node node_modules/codeclimate-test-reporter/bin/codeclimate < coverage/lcov.info

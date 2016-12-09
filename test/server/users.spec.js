@@ -48,12 +48,12 @@ describe('Document Management System', () => {
         });
     });
 
-    it('should create a with a role', (done) => {
+    it('should create a with a default roleId of 2', (done) => {
       request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
-          request(server).get('/users/email').send({ user: fakeUser }).expect(200)
+          request(server).get('/users').send({ user: fakeUser }).expect(200)
             .then((res) => {
-              expect(res.body.user.username).to.equal(fakeUser.username);
+              expect(res.body.user.role).to.equal(2);
               done();
             });
         });
