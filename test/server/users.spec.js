@@ -19,7 +19,7 @@ describe('Document Management System', () => {
 
   describe('User', () => {
     it('should create a new user', (done) => {
-      request(server).post('/create-user').send({ user: fakeUser }).expect(200)
+      request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then((res) => {
           expect(res.body.message).to.equal('New User Created!');
           done();
@@ -27,9 +27,9 @@ describe('Document Management System', () => {
     });
 
     it('should not create a user that already exists', (done) => {
-      request(server).post('/create-user').send({ user: fakeUser }).expect(200)
+      request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
-          request(server).post('/create-user').send({ user: fakeUser }).expect(400)
+          request(server).post('/users').send({ user: fakeUser }).expect(400)
             .then((res) => {
               expect(res.body.message).to.equal('User already exists');
               done();
@@ -38,7 +38,7 @@ describe('Document Management System', () => {
     });
 
     it('should create a unique user', (done) => {
-      request(server).post('/create-user').send({ user: fakeUser }).expect(200)
+      request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
           request(server).get('/users/email').send({ user: fakeUser }).expect(200)
             .then((res) => {

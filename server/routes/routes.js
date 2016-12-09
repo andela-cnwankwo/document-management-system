@@ -10,7 +10,7 @@ router.get('/', (req, res) => (res.status(200))
     })
     : res.status(404));
 
-router.route('/create-user')
+router.route('/users')
   .post((req, res) => {
     userService.createUser(req.body, (data) => {
       return (data)

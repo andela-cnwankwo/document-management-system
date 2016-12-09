@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.JSON,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
+    roleId: { type: DataTypes.STRING, defaultValue: 2 }
   }, {
     classMethods: {
       associate(models) {
