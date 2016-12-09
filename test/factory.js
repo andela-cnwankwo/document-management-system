@@ -5,15 +5,14 @@ const faker = require('faker');
 // const User = require('../app/models/user');
 
 // const factory = factoryGirl.promisify(bluebird);
-
 module.exports.createUser = () => {
+  const first = faker.name.firstName(),
+    last = faker.name.lastName();
   const fakeUser = {
-    userId: faker.random.uuid(),
-    firstname: faker.name.firstName(),
-    lastname: faker.name.lastName(),
+    username: faker.internet.userName(),
+    name: { first, last },
     email: faker.internet.email(),
-    password: faker.internet.password(),
-    role: 'admin'
+    password: faker.internet.password()
   };
 
   return fakeUser;

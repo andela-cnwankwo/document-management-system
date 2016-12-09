@@ -6,6 +6,8 @@ const sequelize = require('../../settings/connect');
 // Call the user model and specify the arguments.
 const User = require('../../app/models/user')(sequelize, Sequelize);
 
+sequelize.sync();
+
 module.exports.createUser = (req, done) => {
   const newUser = req.user;
   User.findOrCreate({
@@ -13,12 +15,10 @@ module.exports.createUser = (req, done) => {
       email: newUser.email
     },
     defaults: {
-      userId: newUser.userId,
-      firstname: newUser.firstname,
-      lastname: newUser.lastname,
+      username: newUser.username,
+      name: newUser.name,
       email: newUser.email,
-      password: newUser.password,
-      role: newUser.role
+      password: newUser.password
     }
   })
     .spread((user, created) => done(created));

@@ -37,6 +37,17 @@ describe('Document Management System', () => {
         });
     });
 
+    // it('should create a unique user', (done) => {
+    //   request(server).post('/create-user').send({ user: fakeUser }).expect(200)
+    //     .then(() => {
+    //       request(server).get('/user/email').send({ user: fakeUser }).expect(200)
+    //         .then((res) => {
+    //           expect(res.body.message).to.equal(fakeUser.email);
+    //           done();
+    //         });
+    //     });
+    // });
+
   //   it('Should create a new unique user', () => {
   //     docMgt.createUser(newUser.user);
   //     expect(docMgt.getUser(newUser.user.username).count()).to.equal(1);
