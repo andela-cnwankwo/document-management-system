@@ -18,7 +18,8 @@ module.exports.createUser = (req, done) => {
       username: newUser.username,
       name: newUser.name,
       email: newUser.email,
-      password: newUser.password
+      password: newUser.password,
+      roleId: newUser.roleId
     }
   })
     .spread((user, created) => done(created));
@@ -31,4 +32,14 @@ module.exports.getUser = (req, done) => {
     }
   }).then(data => done(data))
   .catch(() => false);
+};
+
+module.exports.getAllUsers = (req, done) => {
+  User.findOne({
+    where: {
+      username: req.username,
+      password: req.password
+    }
+  }).then((data) => done(data.roleId))
+  .catch(() => done(false));
 };

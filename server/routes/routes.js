@@ -17,6 +17,16 @@ router.route('/users')
         ? res.status(200).send({ message: 'New User Created!' })
         : res.status(400).send({ message: 'User already exists' });
     });
+  })
+  .get((req, res) => {
+    if (!req.query) {
+      res.status(401).send({ message: 'User unauthorised!' });
+    }
+    userService.getAllUsers(req.query, (data) => {
+      return (data === 1)
+        ? res.status(200).send({ message: 'Query Successful!' })
+        : res.status(401).send({ message: 'User unauthorised!' });
+    });
   });
 
 router.route('/users/email')

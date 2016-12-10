@@ -8,7 +8,7 @@ let fakeUser;
 
 describe('Document Management System', () => {
   before((done) => {
-    sequelize.sync().then(() => {
+    sequelize.sync({ force: true }).then(() => {
       done();
     });
   });
@@ -40,41 +40,69 @@ describe('Document Management System', () => {
     it('should create a unique user', (done) => {
       request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
-          request(server).get('/users/email').send({ user: fakeUser }).expect(200)
-            .then((res) => {
-              expect(res.body.user.username).to.equal(fakeUser.username);
-              done();
-            });
+          request(server).get('/users/email').send({ user: fakeUser })
+            .expect(200)
+              .then((res) => {
+                expect(res.body.user.username).to.equal(fakeUser.username);
+                done();
+              });
         });
     });
 
-    it('should create a with a default roleId of 2', (done) => {
+    it('should create users with default roleId of 2', (done) => {
       request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
-          request(server).get('/users').send({ user: fakeUser }).expect(200)
-            .then((res) => {
-              expect(res.body.user.role).to.equal(2);
-              done();
-            });
+          request(server).get('/users/email').send({ user: fakeUser })
+            .expect(200)
+              .then((res) => {
+                expect(res.body.user.roleId).to.equal(2);
+                done();
+              });
         });
     });
 
-  //   it('Should create a new unique user', () => {
-  //     docMgt.createUser(newUser.user);
-  //     expect(docMgt.getUser(newUser.user.username).count()).to.equal(1);
-  //   });
-  //   it('Verify that a new user created has a role defined', () => {
-  //     expect(docMgt.getUser(newUser.user.username).rows[0].role).to.be.true;
-  //   });
-  //   it('Verify that a new user created has both first and last names', () => {
-  //     expect(docMgt.getUser(newUser.user.username).rows[0].firstName).to.be.true;
-  //     expect(docMgt.getUser(newUser.user.username).rows[0].lastName).to.be.true;
-  //   });
-  //   it('Should return all users when requested by the admin', () => {
-  //     expect(docMgt.getAllUsers()).not.to.be.false;
-  //   });
-  });
-  // describe('Role', () => {
+    it('should create users with both first and last names', (done) => {
+      request(server).post('/users').send({ user: fakeUser }).expect(200)
+        .then(() => {
+          request(server).get('/users/email').send({ user: fakeUser })
+            .expect(200)
+              .then((res) => {
+                expect(res.body.user.name.first).to.equal(fakeUser.name.first);
+                expect(res.body.user.name.last).to.equal(fakeUser.name.last);
+                done();
+              });
+        });
+    });
 
-  // });
+    it('should return all users if the current user has an admin role',
+      (done) => {
+        const fakeAdmin = fakeUser;
+        fakeAdmin.roleId = 1;
+        request(server).post('/users').send({ user: fakeAdmin }).expect(200)
+          .then(() => {
+            request(server)
+              .get(`/users?username=${fakeAdmin.username}&password=${fakeAdmin.password}`)
+                .expect(200)
+            .then((res) => {
+              expect(res.body.message).to.equal('Query Successful!');
+              // TODO: display all registered users, response set temporarily to 'Query Successful!'
+              done();
+            });
+          });
+      }
+    );
+
+    it('should return unauthorised if the user is not an admin', (done) => {
+      request(server).post('/users').send({ user: fakeUser }).expect(200)
+        .then(() => {
+          request(server)
+            .get(`/users?username=${fakeUser.username}&password=${fakeUser.password}`)
+              .expect(401)
+          .then((res) => {
+            expect(res.body.message).to.equal('User unauthorised!');
+            done();
+          });
+        });
+    });
+  });
 });
