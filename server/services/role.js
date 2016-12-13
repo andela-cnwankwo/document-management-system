@@ -15,7 +15,7 @@ sequelize.sync({ });
  */
 module.exports.createRole = (req, done) => {
   userService.getUserRole(req.user, (data) => {
-    if (data !== 'admin') {
+    if (data !== 1) {
       done(false);
     }
     Role.findOrCreate({

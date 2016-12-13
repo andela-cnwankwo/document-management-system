@@ -23,7 +23,7 @@ module.exports.createUser = (req, done) => {
       name: newUser.name,
       email: newUser.email,
       password: newUser.password,
-      role: newUser.role
+      roleId: newUser.roleId
     }
   })
     .spread((user, created) => done(created));
@@ -50,6 +50,6 @@ module.exports.getUserRole = (req, done) => {
       username: req.username,
       password: req.password
     }
-  }).then((data) => done(data.role))
+  }).then((data) => done(data.roleId))
   .catch(() => done(false));
 };

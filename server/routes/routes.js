@@ -25,7 +25,7 @@ router.route('/users')
       res.status(401).send({ message: 'User unauthorised!' });
     }
     userService.getUserRole(req.query, (data) => {
-      return (data === 'admin')
+      return (data === 1)
         ? res.status(200).send({ message: 'Query Successful!' })
         : res.status(401).send({ message: 'User unauthorised!' });
     });

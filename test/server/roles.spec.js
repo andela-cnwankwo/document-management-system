@@ -20,7 +20,7 @@ describe('Roles', () => {
   describe('Role', () => {
     it('should only create unique role if the user is an admin', (done) => {
       const fakeAdmin = fakeUser;
-      fakeAdmin.role = 'admin';
+      fakeAdmin.roleId = 1;
       request(server).post('/users').send({
         user: fakeAdmin
       }).expect(200)
@@ -32,7 +32,7 @@ describe('Roles', () => {
                 password: fakeAdmin.password
               },
               newrole: {
-                title: 'regular'
+                title: 'admin'
               }
             }).expect(200)
             .then((res) => {
@@ -72,10 +72,10 @@ describe('Roles', () => {
     });
 
     it('should have at least admin and regular roles created', (done) => {
-      // request(server).get('/roles?title=admin').expect(200)
-      //   .then((res) => {
-      //     expect(res.body.message).to.equal('Role exists!');
-      //   });
+      request(server).get('/roles?title=admin').expect(200)
+        .then((res) => {
+          expect(res.body.message).to.equal('Role exists!');
+        });
       request(server).get('/roles?title=regular').expect(200)
         .then((res) => {
           expect(res.body.message).to.equal('Role exists!');

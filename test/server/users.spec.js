@@ -55,7 +55,7 @@ describe('Document Management System', () => {
           request(server).get('/users/email').send({ user: fakeUser })
             .expect(200)
               .then((res) => {
-                expect(res.body.user.role).to.equal('regular');
+                expect(res.body.user.roleId).to.equal(2);
                 done();
               });
         });
@@ -77,7 +77,7 @@ describe('Document Management System', () => {
     it('should return all users if the current user has an admin role',
       (done) => {
         const fakeAdmin = fakeUser;
-        fakeAdmin.role = 'admin';
+        fakeAdmin.roleId = 1;
         request(server).post('/users').send({ user: fakeAdmin }).expect(200)
           .then(() => {
             request(server)

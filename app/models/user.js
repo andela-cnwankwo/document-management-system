@@ -4,11 +4,15 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.JSON,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    role: DataTypes.STRING
+    roleId: DataTypes.INTEGER
   }, {
     classMethods: {
       associate(models) {
-        // associations can be defined here
+        // associations
+        User.belongsTo(models.Role, {
+          foreignKey: 'roleId',
+          onDelete: 'Cascade',
+        });
       }
     }
   });
