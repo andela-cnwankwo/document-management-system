@@ -8,7 +8,7 @@ let fakeUser;
 
 describe('Document Management System', () => {
   before((done) => {
-    sequelize.sync({ force: true }).then(() => {
+    sequelize.sync({}).then(() => {
       done();
     });
   });
@@ -49,13 +49,13 @@ describe('Document Management System', () => {
         });
     });
 
-    it('should create users with default roleId of 2', (done) => {
+    it('should create users with default role of regular', (done) => {
       request(server).post('/users').send({ user: fakeUser }).expect(200)
         .then(() => {
           request(server).get('/users/email').send({ user: fakeUser })
             .expect(200)
               .then((res) => {
-                expect(res.body.user.roleId).to.equal(2);
+                expect(res.body.user.role).to.equal('regular');
                 done();
               });
         });
@@ -77,7 +77,7 @@ describe('Document Management System', () => {
     it('should return all users if the current user has an admin role',
       (done) => {
         const fakeAdmin = fakeUser;
-        fakeAdmin.roleId = 1;
+        fakeAdmin.role = 'admin';
         request(server).post('/users').send({ user: fakeAdmin }).expect(200)
           .then(() => {
             request(server)

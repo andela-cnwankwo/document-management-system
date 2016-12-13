@@ -1,5 +1,6 @@
 const express = require('express');
 const userService = require('../../server/services/user');
+const roleService = require('../../server/services/role');
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.get('/', (req, res) => (res.status(200))
     })
     : res.status(404));
 
+// Setup users route to create and retreive users.
 router.route('/users')
   .post((req, res) => {
     userService.createUser(req.body, (data) => {
@@ -22,13 +24,14 @@ router.route('/users')
     if (!req.query) {
       res.status(401).send({ message: 'User unauthorised!' });
     }
-    userService.getAllUsers(req.query, (data) => {
-      return (data === 1)
+    userService.getUserRole(req.query, (data) => {
+      return (data === 'admin')
         ? res.status(200).send({ message: 'Query Successful!' })
         : res.status(401).send({ message: 'User unauthorised!' });
     });
   });
 
+// Setup route to retrieve user data
 router.route('/users/email')
   .get((req, res) => {
     userService.getUser(req.body, (data) => {
@@ -37,4 +40,15 @@ router.route('/users/email')
         : res.status(404).send({ message: 'User not Found' });
     });
   });
+
+// Setup route to create roles.
+router.route('/roles')
+  .post((req, res) => {
+    roleService.createRole(req.body, (data) => {
+      return (data)
+        ? res.status(200).send({ message: 'Role Updated!' })
+        : res.status(401).send({ message: 'User unauthorized!' });
+    });
+  });
+
 module.exports = router;

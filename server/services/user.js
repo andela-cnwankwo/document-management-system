@@ -1,4 +1,5 @@
-//  Defnes various services for the user object
+//  Defines various services for the user object
+
 const Sequelize = require('sequelize');
 // Require sequelize from the connection settings
 const sequelize = require('../../settings/connect');
@@ -8,6 +9,9 @@ const User = require('../../app/models/user')(sequelize, Sequelize);
 
 sequelize.sync({});
 
+/**
+ * Create a new user
+ */
 module.exports.createUser = (req, done) => {
   const newUser = req.user;
   User.findOrCreate({
@@ -19,12 +23,15 @@ module.exports.createUser = (req, done) => {
       name: newUser.name,
       email: newUser.email,
       password: newUser.password,
-      roleId: newUser.roleId
+      role: newUser.role
     }
   })
     .spread((user, created) => done(created));
 };
 
+/**
+ * Get a user data based on the email specified
+ */
 module.exports.getUser = (req, done) => {
   User.find({
     where: {
@@ -34,12 +41,15 @@ module.exports.getUser = (req, done) => {
   .catch(() => false);
 };
 
-module.exports.getAllUsers = (req, done) => {
+/**
+ * Gets all registered users in the database
+ */
+module.exports.getUserRole = (req, done) => {
   User.findOne({
     where: {
       username: req.username,
       password: req.password
     }
-  }).then((data) => done(data.roleId))
+  }).then((data) => done(data.role))
   .catch(() => done(false));
 };

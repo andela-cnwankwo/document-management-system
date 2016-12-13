@@ -30,9 +30,9 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE
     },
-    roleId: {
+    role: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING
     }
   }),
   down: (queryInterface, Sequelize) => queryInterface.dropTable('Users')
