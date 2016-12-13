@@ -7,7 +7,7 @@ const sequelize = require('../../settings/connect');
 // Call the user model and specify the arguments.
 const User = require('../../app/models/user')(sequelize, Sequelize);
 
-sequelize.sync({});
+sequelize.sync({ });
 
 /**
  * Create a new user

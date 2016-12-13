@@ -49,6 +49,20 @@ router.route('/roles')
         ? res.status(200).send({ message: 'Role Updated!' })
         : res.status(401).send({ message: 'User unauthorized!' });
     });
+  })
+  .get((req, res) => {
+    if (!req.query.title) {
+      roleService.getAllRoles(req.query, (data) => {
+        return (data)
+          ? res.status(200).send(data)
+          : res.status(404).send({ message: 'No roles found!' });
+      });
+    }
+    roleService.getRole(req.query, (data) => {
+      return (data)
+        ? res.status(200).send({ message: 'Role exists!' })
+        : res.status(404).send({ message: 'No role found!' });
+    });
   });
 
 module.exports = router;

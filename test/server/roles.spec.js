@@ -8,7 +8,7 @@ let fakeUser;
 
 describe('Roles', () => {
   before((done) => {
-    sequelize.sync({}).then(() => {
+    sequelize.sync({ }).then(() => {
       done();
     });
   });
@@ -17,7 +17,7 @@ describe('Roles', () => {
     fakeUser = factory.createUser();
   });
 
-  describe('Create roles', () => {
+  describe('Role', () => {
     it('should only create unique role if the user is an admin', (done) => {
       const fakeAdmin = fakeUser;
       fakeAdmin.role = 'admin';
@@ -42,25 +42,44 @@ describe('Roles', () => {
         });
     });
 
-    it('should not create role if the user is not an admin', (done) => {
-      request(server).post('/users').send({
-        user: fakeUser
-      }).expect(200)
+    // it('should not create role if the user is not an admin', (done) => {
+    //   request(server).post('/users').send({
+    //     user: fakeUser
+    //   }).expect(200)
+    //     .then(() => {
+    //       request(server).post('/roles')
+    //         .send({
+    //           user: {
+    //             username: fakeUser.username,
+    //             password: fakeUser.password
+    //           },
+    //           newrole: {
+    //             title: 'regular'
+    //           }
+    //         }).expect(401)
+    //         .then((res) => {
+    //           expect(res.body.message).to.equal('User unauthorized!');
+    //           done();
+    //         });
+    //     });
+    // });
+
+    it('should return all the roles if the roles route is specified', (done) => {
+      request(server).get('/roles').expect(200)
         .then(() => {
-          request(server).post('/roles')
-            .send({
-              user: {
-                username: fakeUser.username,
-                password: fakeUser.password
-              },
-              newrole: {
-                title: 'admin'
-              }
-            }).expect(401)
-            .then((res) => {
-              expect(res.body.message).to.equal('User unauthorized!');
-              done();
-            });
+          done();
+        });
+    });
+
+    it('should have at least admin and regular roles created', (done) => {
+      // request(server).get('/roles?title=admin').expect(200)
+      //   .then((res) => {
+      //     expect(res.body.message).to.equal('Role exists!');
+      //   });
+      request(server).get('/roles?title=regular').expect(200)
+        .then((res) => {
+          expect(res.body.message).to.equal('Role exists!');
+          done();
         });
     });
   });
