@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         // associations
         User.belongsTo(models.Role, {
           foreignKey: 'roleId',
-          onDelete: 'Cascade',
+          onDelete: 'CASCADE',
+        });
+
+        User.hasMany(models.Doc, {
+          foreignKey: 'ownerId',
         });
       }
     }

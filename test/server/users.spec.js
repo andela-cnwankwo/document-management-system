@@ -8,7 +8,7 @@ let fakeUser;
 
 describe('Document Management System', () => {
   before((done) => {
-    sequelize.sync({}).then(() => {
+    sequelize.sync({ force: true }).then(() => {
       done();
     });
   });

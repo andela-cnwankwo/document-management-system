@@ -32,7 +32,7 @@ describe('Roles', () => {
                 password: fakeAdmin.password
               },
               newrole: {
-                title: 'admin'
+                title: 'regular'
               }
             }).expect(200)
             .then((res) => {
