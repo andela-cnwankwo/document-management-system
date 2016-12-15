@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha test --recursive --compilers js:babel-register --require babel-polyfill --reporter spec",
+    "travis-test": "NODE_ENV=travis mocha test --recursive --compilers js:babel-register --require babel-polyfill --reporter spec",
     "start": "node settings/server.js",
     "start:dev": "nodemon settings/app-config.js",
     "migrate": "sequelize db:migrate",
-    "migrate:test": "NODE_ENV=test sequelize db:migrate"
+    "migrate:test": "NODE_ENV=test sequelize db:migrate",
+    "migrate:travis": "NODE_ENV=travis sequelize db:migrate"
   },
   "repository": {
     "type": "git",

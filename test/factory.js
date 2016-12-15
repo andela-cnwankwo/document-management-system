@@ -11,6 +11,16 @@ module.exports.createUser = () => {
     password: faker.internet.password(),
     roleId: roleID
   };
-
   return fakeUser;
+};
+
+module.exports.createDocument = () => {
+  const fakeDocument = {
+    published: Date(),
+    title: faker.lorem.word(),
+    access: 'public',
+    content: faker.lorem.sentences(),
+    ownerId: 2
+  };
+  return fakeDocument;
 };

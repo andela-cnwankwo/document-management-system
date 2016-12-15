@@ -10,8 +10,12 @@ module.exports = {
       published: {
         type: Sequelize.DATE
       },
-      access: {
+      title: {
         type: Sequelize.STRING
+      },
+      access: {
+        type: Sequelize.STRING,
+        defaultValue: 'public'
       },
       content: {
         type: Sequelize.STRING
