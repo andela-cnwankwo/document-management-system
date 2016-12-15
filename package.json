@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
-    "travis:test": "NODE_ENV=travis mocha test --recursive --compilers js:babel-register --require babel-polyfill --reporter spec",
+    "travis:test": "NODE_ENV=travis ./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
     "start": "node settings/server.js",
     "start:dev": "nodemon settings/app-config.js",
     "migrate": "sequelize db:migrate",

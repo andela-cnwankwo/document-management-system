@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV || 'test',
+const env = process.env.NODE_ENV || 'travis',
   config = require('../settings/config.json')[env],
   Sequelize = require('sequelize'),
 
