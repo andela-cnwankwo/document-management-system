@@ -7,11 +7,11 @@ const sequelize = require('../test-helper');
 let fakeUser;
 
 describe('Roles', () => {
-  before((done) => {
-    sequelize.sync({ force: true }).then(() => {
-      done();
-    });
-  });
+  // before((done) => {
+  //   sequelize.sync({ }).then(() => {
+  //     done();
+  //   });
+  // });
 
   beforeEach(() => {
     fakeUser = factory.createUser();

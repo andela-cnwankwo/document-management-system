@@ -1,13 +1,13 @@
-// const expect = require('chai').expect;
-// const request = require('supertest');
-// const factory = require('../factory');
-// const server = require('../../settings/app-config');
-// const sequelize = require('../test-helper');
+const expect = require('chai').expect;
+const request = require('supertest');
+const factory = require('../factory');
+const server = require('../../settings/app-config');
+const sequelize = require('../test-helper');
 
 
-// let fakeUser;
-// let currentUser;
-// let fakeDocument;
+let fakeUser;
+let currentUser;
+let fakeDocument;
 
 // describe('Document', () => {
 //   before((done) => {
