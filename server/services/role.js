@@ -12,6 +12,9 @@ sequelize.sync({ });
 
 /**
  * Create a new role
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {boolean} true if created,false otherwise
  */
 module.exports.createRole = (req, done) => {
   userService.getUserRole(req.user, (data) => {
@@ -33,6 +36,12 @@ module.exports.createRole = (req, done) => {
   });
 };
 
+/**
+ * Get a created role
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {object} specified role.
+ */
 module.exports.getRole = (req, done) => {
   if (req.title) {
     Role.findOne({ where: { title: req.title } }).then((data) => {
@@ -41,6 +50,12 @@ module.exports.getRole = (req, done) => {
   }
 };
 
+/**
+ * Get all roles
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {object} all roles.
+ */
 module.exports.getAllRoles = (req, done) => {
   Role.findAll().then((roles) => {
     done(roles);

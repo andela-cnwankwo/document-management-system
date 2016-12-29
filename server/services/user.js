@@ -11,6 +11,9 @@ sequelize.sync({ });
 
 /**
  * Create a new user
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createUser = (req, done) => {
   const newUser = req.user;
@@ -31,6 +34,9 @@ module.exports.createUser = (req, done) => {
 
 /**
  * Get a user data based on the email specified
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {object} specied user.
  */
 module.exports.getUser = (req, done) => {
   User.find({
@@ -42,7 +48,10 @@ module.exports.getUser = (req, done) => {
 };
 
 /**
- * Gets all registered users in the database
+ * Get a user data based on the email specified
+ * @param {object} req
+ * @param {function} done // Callback
+ * @returns {object} roles for the specied user.
  */
 module.exports.getUserRole = (req, done) => {
   User.findOne({
@@ -50,6 +59,6 @@ module.exports.getUserRole = (req, done) => {
       username: req.username,
       password: req.password
     }
-  }).then((data) => done(data.roleId))
+  }).then(data => done(data.roleId))
   .catch(() => done(false));
 };

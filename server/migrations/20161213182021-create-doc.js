@@ -8,7 +8,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       published: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
       title: {
         type: Sequelize.STRING
@@ -18,7 +18,7 @@ module.exports = {
         defaultValue: 'public'
       },
       content: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
