@@ -1,11 +1,11 @@
 //  Defines various services for the user object
 
 const Sequelize = require('sequelize');
-// Require sequelize from the connection settings
 const sequelize = require('../../settings/connect');
-
-// Call the user model and specify the arguments.
 const User = require('../../app/models/user')(sequelize, Sequelize);
+const jwt = require('jsonwebtoken');
+
+const secret = 'documentmanagement'; // Specify a secret to sign json web tokens
 
 sequelize.sync({ });
 
@@ -15,8 +15,8 @@ sequelize.sync({ });
  * @param {function} done // Callback
  * @returns {boolean} true if created, false otherwise.
  */
-module.exports.createUser = (req, done) => {
-  const newUser = req.user;
+module.exports.createUser = (req, res) => {
+  const newUser = req.body.user;
   User.findOrCreate({
     where: {
       email: newUser.email
@@ -29,8 +29,26 @@ module.exports.createUser = (req, done) => {
       roleId: newUser.roleId
     }
   })
-    .spread((user, created) => done(created));
+    .spread((user, created) => {
+      // // TODO: when a user logs in after being created
+      // // A jwt token will be signed for the user with the email and password as payload.
+      // userToken(user);
+      // done(created);
+      return (created)
+        ? res.status(200).send({ message: 'New User Created!' })
+        : res.status(400).send({ message: 'User already exists' });
+    });
 };
+
+/**
+ * Get a user token
+ * @param {object} user
+ * @returns {string} specied user token.
+ */
+module.exports.userToken = (user) => jwt.sign(
+  { user: user.username, password: user.password }
+  , secret
+);
 
 /**
  * Get a user data based on the email specified

@@ -2,6 +2,7 @@ const express = require('express');
 const userService = require('../../server/services/user');
 const roleService = require('../../server/services/role');
 const documentService = require('../../server/services/doc');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -14,11 +15,7 @@ router.get('/', (req, res) => (res.status(200))
 
 // Setup users route to create and retreive users.
 router.route('/users')
-  .post((req, res) => {
-    userService.createUser(req.body, (data) => (data)
-        ? res.status(200).send({ message: 'New User Created!' })
-        : res.status(400).send({ message: 'User already exists' }));
-  })
+  .post(userService.createUser)
   .get((req, res) => {
     if (!req.query) {
       res.status(401).send({ message: 'User unauthorised!' });
@@ -41,11 +38,7 @@ router.route('/users/email')
 
 // Setup route to create roles.
 router.route('/roles')
-  .post((req, res) => {
-    roleService.createRole(req.body, (data) => (data)
-        ? res.status(200).send({ message: 'Role Updated!' })
-        : res.status(401).send({ message: 'User unauthorized!' }));
-  })
+  .post(roleService.createRole)
   .get((req, res) => {
     if (!req.query.title) {
       roleService.getAllRoles(req.query, (data) => (data)
@@ -59,11 +52,7 @@ router.route('/roles')
 
   // Setup route for documents
 router.route('/documents')
-  .post((req, res) => {
-    documentService.createDocument(req.body, (data) => (data)
-    ? res.status(200).send(data)
-    : res.status(404).send({ message: 'Could not create document' }));
-  })
+  .post(documentService.createDocument)
   .get((req, res) => {
     if (!req.query) {
       res.status(401).send({ message: 'User Unauthorised'  });

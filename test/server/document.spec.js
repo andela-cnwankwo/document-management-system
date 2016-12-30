@@ -24,6 +24,7 @@ describe('Document', () => {
         request(server).get('/users/email').send({ user: fakeUser })
           .then((res) => {
             currentUser = res.body.user;
+            fakeDocument.ownerId = res.body.user.id;
             done();
           });
       });
@@ -31,7 +32,6 @@ describe('Document', () => {
 
   describe('Create Document', () => {
     it('should create a document with published date defined', (done) => {
-      fakeDocument.ownerId = currentUser.id;
       request(server).post('/documents').send({ document: fakeDocument })
       .expect(200)
         .then((res) => {
@@ -50,11 +50,23 @@ describe('Document', () => {
     });
 
     it('should only retrieve private documents if requested by owner', (done) => {
-      fakeDocument.ownerId = currentUser.id;
+      fakeDocument.access = 'private';
       request(server).post('/documents').send({ document: fakeDocument })
       .expect(200)
         .then(() => {
           request(server).get(`/documents?ownerId=${currentUser.id}`).expect(200)
+            .then(() => {
+              done();
+            });
+        });
+    });
+
+    it('should not retrieve private documents if requested by another user', (done) => {
+      fakeDocument.access = 'private';
+      request(server).post('/documents').send({ document: fakeDocument })
+      .expect(200)
+        .then(() => {
+          request(server).get(`/documents?ownerId=${currentUser.id + 1}`).expect(401)
             .then(() => {
               done();
             });

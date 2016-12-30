@@ -13,26 +13,24 @@ sequelize.sync({ });
 /**
  * Create a new role
  * @param {object} req
- * @param {function} done // Callback
+ * @param {function} res // Callback
  * @returns {boolean} true if created,false otherwise
  */
-module.exports.createRole = (req, done) => {
-  userService.getUserRole(req.user, (data) => {
+module.exports.createRole = (req, res) => {
+  userService.getUserRole(req.body.user, (data) => {
     if (data !== 1) {
-      done(false);
+      return res.status(401).send({ message: 'User unauthorized!' });
     }
     Role.findOrCreate({
       where: {
-        title: req.newrole.title
+        title: req.body.newrole.title
       },
       defaults: {
-        title: req.newrole.title
+        title: req.body.newrole.title
       }
     })
-    .spread((role, created) => {
-      // Return true if the role is created or already exists
-      done(true);
-    });
+    .spread((role, created) =>
+      res.status(200).send({ message: 'Role Updated!' }));
   });
 };
 

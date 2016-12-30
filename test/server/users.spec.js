@@ -3,8 +3,11 @@ const request = require('supertest');
 const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
+const jwt = require('jsonwebtoken');
 
 let fakeUser;
+let token;
+const secret = 'documentmanagement';
 
 describe('Document Management System', () => {
   // before((done) => {
@@ -15,6 +18,7 @@ describe('Document Management System', () => {
 
   beforeEach(() => {
     fakeUser = factory.createUser();
+    token = jwt.sign(fakeUser, secret);
   });
 
   describe('User', () => {
