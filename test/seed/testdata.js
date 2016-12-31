@@ -47,7 +47,7 @@ class seedData {
         title: 'regular'
       }
     ];
-    return this.models.Role.bulkCreate(roles);
+    return this.model.Role.bulkCreate(roles);
   }
 
   /**
@@ -122,4 +122,4 @@ class seedData {
   }
 }
 
-export default new seedData().init();
+module.exports = new seedData().init();
