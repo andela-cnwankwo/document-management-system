@@ -12,7 +12,7 @@ sequelize.sync({ });
 /**
  * Create a new user
  * @param {object} req
- * @param {function} done // Callback
+ * @param {function} res // Callback
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createUser = (req, res) => {

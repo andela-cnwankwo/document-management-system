@@ -13,7 +13,7 @@ sequelize.sync({ });
 /**
  * Create a new document
  * @param {object} req
- * @param {function} done // Callback
+ * @param {function} res // Callback
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createDocument = (req, res) => {
