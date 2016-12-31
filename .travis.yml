@@ -15,3 +15,6 @@ script:
 
 after_script:
   - node node_modules/codeclimate-test-reporter/bin/codeclimate < coverage/lcov.info
+
+addons:
+  postgresql: "9.3"
