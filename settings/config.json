@@ -23,14 +23,6 @@
       "port": "5432",
       "dialect": "postgres"
     },
-    "seed": {
-      "username": "node",
-      "password": "node",
-      "database": "mydb",
-      "host": "127.0.0.1",
-      "port": "5432",
-      "dialect": "postgres"
-    },
   "production": {
     "username": "root",
     "password": null,
