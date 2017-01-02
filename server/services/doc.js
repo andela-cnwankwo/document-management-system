@@ -3,12 +3,9 @@
 const Sequelize = require('sequelize');
 // Require sequelize from the connection settings
 const sequelize = require('../../settings/connect');
-const userService = require('./user');
-const validate = require('../middlewares/auth');
 const jwt = require('jsonwebtoken');
 
 const secret = process.env.SECRET || 'documentmanagement';
-
 
 // Call the doc model and specify the arguments.
 const Doc = require('../../app/models/doc')(sequelize, Sequelize);
@@ -79,9 +76,14 @@ module.exports.getDocument = (req, res) => {
 module.exports.getAllDocuments = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
+  token.userId = 1;
   if (token.userRoleId === 1) {
     if (req.params.limit) {
       Doc.findAll({ order: [['published', 'DESC']], limit: req.params.limit }).then(data => (data)
+        ? res.status(200).send(data)
+        : res.status(404).send({ message: 'Document Not Found' }));
+    } else if (req.params.offset) {
+      Doc.findAll({ order: [['published', 'DESC']], offset: req.params.offset, limit: req.params.limit }).then(data => (data)
         ? res.status(200).send(data)
         : res.status(404).send({ message: 'Document Not Found' }));
     } else {
@@ -96,11 +98,19 @@ module.exports.getAllDocuments = (req, res) => {
           ownerId: {
             $eq: token.userId
           },
-          ownerRoleId: token.userRoleId
-        },
-        $and: {
+          ownerRoleId: {
+            $eq: token.userRoleId
+          },
           access: {
-            $ne: 'private'
+            $eq: 'public'
+          },
+          $and: {
+            access: {
+              $eq: 'private'
+            },
+            ownerId: {
+              $eq: token.userId
+            }
           }
         }
       }

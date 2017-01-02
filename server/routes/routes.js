@@ -38,11 +38,14 @@ router.route('/documents')
   .post(validate.validateToken, documentService.createDocument)
   .get(validate.validateToken, documentService.getAllDocuments);
 
-// Retrieve a document
+// Retrieve a single document
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument);
 
 router.route('/documents/all/:limit')
+  .get(validate.validateToken, documentService.getAllDocuments);
+
+router.route('/documents/all/:offset/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
 
