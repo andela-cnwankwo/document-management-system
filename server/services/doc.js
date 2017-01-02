@@ -81,27 +81,27 @@ module.exports.getAllDocuments = (req, res) => {
   const token = jwt.verify(jwtcode, secret);
   if (token.userRoleId === 1) {
     if (req.params.limit) {
-      Doc.findAll({ limit: req.params.limit }).then(data => (data)
+      Doc.findAll({ order: [['published', 'DESC']], limit: req.params.limit }).then(data => (data)
         ? res.status(200).send(data)
         : res.status(404).send({ message: 'Document Not Found' }));
     } else {
-      Doc.findAll().then(data => (data)
+      Doc.findAll({ order: [['published', 'DESC']] }).then(data => (data)
         ? res.status(200).send(data)
         : res.status(404).send({ message: 'Document Not Found' }));
     }
   } else {
-
-    // @TODO: make it not to display private documents created by users with the same role level.
     Doc.findAll({
       where: {
         $or: {
           ownerId: {
             $eq: token.userId
           },
+          ownerRoleId: token.userRoleId
+        },
+        $and: {
           access: {
             $ne: 'private'
-          },
-          ownerRoleId: token.userRoleId
+          }
         }
       }
     }).then((data) => {
