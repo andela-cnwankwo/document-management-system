@@ -35,21 +35,16 @@ router.route('/roles/all')
 
   // Setup route for documents
 router.route('/documents')
-  .post(validate.validateToken, documentService.createDocument);
+  .post(validate.validateToken, documentService.createDocument)
+  .get(validate.validateToken, documentService.getAllDocuments);
 
 // Retrieve a document
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument);
 
-router.route('/documents/all')
-  .get((req, res) => {
-    if (!req.query) {
-      res.status(401).send({ message: 'User Unauthorised'  });
-    }
-    documentService.getAllDocuments(req.query, (data) => (data)
-    ? res.status(200).send(data)
-    : res.status(401).send({ message: 'User Unauthorised' }));
-  });
+router.route('/documents/all/:limit')
+  .get(validate.validateToken, documentService.getAllDocuments);
+
 
 
 module.exports = router;

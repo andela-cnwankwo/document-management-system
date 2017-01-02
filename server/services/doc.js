@@ -49,13 +49,66 @@ module.exports.createDocument = (req, res) => {
 module.exports.getDocument = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
-  if (token.userRoleId === 1) {
-    Doc.find({
-      where: {
-        id: req.params.id
+  Doc.find({
+    where: {
+      id: req.params.id
+    }
+  }).then((data) => {
+    if (!data) {
+      return res.status(404).send({ message: 'Document not found' });
+    }
+    if ((data && token.userRoleId === 1) || data.access === 'public') {
+      return res.status(200).send(data);
+    }
+    if (data && token.userRoleId === 2 && data.access === 'role') {
+      if (token.userRoleId === data.ownerId) {
+        res.status(200).send(data);
       }
-    }).then(data => (data)
-    ? res.status(200).send(data)
-    : res.status(404).send({ message: 'Document not found' }));
+      return res.status(401).send({ message: 'Cannot Access document' });
+    }
+    return res.status(401).send({ message: 'Cannot Access private document' });
+  });
+};
+
+/**
+ * Get created document
+ * @param {object} req
+ * @param {function} res // Response
+ * @returns {object} specified document.
+ */
+module.exports.getAllDocuments = (req, res) => {
+  const jwtcode = req.headers.authorization;
+  const token = jwt.verify(jwtcode, secret);
+  if (token.userRoleId === 1) {
+    if (req.params.limit) {
+      Doc.findAll({ limit: req.params.limit }).then(data => (data)
+        ? res.status(200).send(data)
+        : res.status(404).send({ message: 'Document Not Found' }));
+    } else {
+      Doc.findAll().then(data => (data)
+        ? res.status(200).send(data)
+        : res.status(404).send({ message: 'Document Not Found' }));
+    }
+  } else {
+
+    // @TODO: make it not to display private documents created by users with the same role level.
+    Doc.findAll({
+      where: {
+        $or: {
+          ownerId: {
+            $eq: token.userId
+          },
+          access: {
+            $ne: 'private'
+          },
+          ownerRoleId: token.userRoleId
+        }
+      }
+    }).then((data) => {
+      if (!data) {
+        return res.status(404).send({ message: 'Document Not Found' });
+      }
+      return res.status(200).send(data);
+    });
   }
 };

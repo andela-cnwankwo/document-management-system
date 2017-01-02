@@ -94,28 +94,32 @@ class seedData {
         title: faker.lorem.word(),
         access: 'public',
         content: faker.lorem.sentences(),
-        ownerId: 2
+        ownerId: 2,
+        ownerRoleId: 2
       },
       {
         published: Date(),
         title: faker.lorem.word(),
         access: 'private',
         content: faker.lorem.sentences(),
-        ownerId: 2
+        ownerId: 2,
+        ownerRoleId: 1
       },
       {
         published: Date(),
         title: faker.lorem.word(),
         access: 'private',
         content: faker.lorem.sentences(),
-        ownerId: 1
+        ownerId: 1,
+        ownerRoleId: 2
       },
       {
         published: Date(),
         title: faker.lorem.word(),
         access: 'role',
         content: faker.lorem.sentences(),
-        ownerId: 1
+        ownerId: 1,
+        ownerRoleId: 2
       }
     ];
     return this.model.Doc.bulkCreate(documents);

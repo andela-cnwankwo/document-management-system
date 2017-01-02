@@ -38,6 +38,16 @@ module.exports = {
           as: 'ownerId',
         },
       },
+      ownerRoleId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Users',
+          key: 'roleId',
+          as: 'ownerRoleId',
+        },
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'ownerId',
           onDelete: 'CASCADE',
         });
+        Doc.belongsTo(models.User, {
+          foreignKey: 'ownerRoleId',
+          onDelete: 'CASCADE',
+        });
       }
     }
   });
