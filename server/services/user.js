@@ -84,20 +84,10 @@ module.exports.getAllUsers = (req, res) => {
     return res.status(401).send({ message: 'User unauthorised!' });
   }
 
-  const jwtcode = req.headers.authorization;
-  try {
-    const token = jwt.verify(jwtcode, secret);
-    if (token && token.userRoleId === 1) {
-      User.findAll({}).then(data => (data)
-        ? res.status(200).send({ data })
-        : res.status(404).send({ message: 'No User Found' })
-      );
-    } else {
-      return res.status(401).send({ message: 'Only admin role can view all users!' });
-    }
-  } catch (e) {
-    return res.status(401).send({ message: 'User unauthorised!' });
-  }
+  User.findAll({}).then(data => (data)
+    ? res.status(200).send({ data })
+    : res.status(404).send({ message: 'No User Found' })
+  );
 };
 
 /**
