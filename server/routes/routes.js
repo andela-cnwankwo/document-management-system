@@ -16,25 +16,11 @@ router.get('/', (req, res) => (res.status(200))
 // Setup users route to create and retreive users.
 router.route('/users')
   .post(userService.createUser)
-  .get((req, res) => {
-    if (!req.query) {
-      res.status(401).send({ message: 'User unauthorised!' });
-    }
-    userService.getUserRole(req.query, (data) => (data === 1)
-        ? res.status(200).send({ message: 'Query Successful!' })
-        : res.status(401).send({ message: 'User unauthorised!' }));
-  });
+  .get(userService.getAllUsers);
 
 // Setup route to retrieve user data
-router.route('/users/email')
-  .get((req, res) => {
-    if (!req.query) {
-      res.status(401).send({ message: 'User unauthorised!' });
-    }
-    userService.getUser(req.body, (data) => (data)
-        ? res.status(200).send({ user: data })
-        : res.status(404).send({ message: 'User not Found' }));
-  });
+router.route('/users/:username')
+  .get(userService.getUser);
 
 // Setup route to create roles.
 router.route('/roles')

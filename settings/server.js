@@ -10,13 +10,18 @@ const secret = 'documentmanagement';
 // Initialize express app
 const app = express();
 
-// Define a middleware to handle request events.
+// Define a middleware to handle request events and verify tokens.
 app.use((req, res, next) => {
   console.log('A request has been made to the server');
-  // const jwtcode = req.headers.authorization;
-  // const token = jwt.verify(jwtcode, secret);
-  // console.log(` JWTCode: ${jwtcode}`);
-  next();
+  const jwtcode = req.headers.authorization;
+  try {
+    const token = jwt.verify(jwtcode, secret);
+    return (token)
+    ? next()
+    : res.status(401).send({ message: 'User unauthorised!' });
+  } catch (e) {
+    return res.status(401).send({ message: 'User unauthorised!' });
+  }
 });
 
 // log requests to the console

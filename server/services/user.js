@@ -16,7 +16,8 @@ sequelize.sync({ });
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createUser = (req, res) => {
-  const newUser = req.body.user;
+  console.log(req.body);
+  const newUser = req.body;
   User.findOrCreate({
     where: {
       email: newUser.email
@@ -29,14 +30,16 @@ module.exports.createUser = (req, res) => {
       roleId: newUser.roleId
     }
   })
-    .spread((user, created) => {
-      // // TODO: when a user logs in after being created
-      // // A jwt token will be signed for the user with the email and password as payload.
-      // userToken(user);
-      // done(created);
-      return (created)
-        ? res.status(200).send({ message: 'New User Created!' })
-        : res.status(400).send({ message: 'User already exists' });
+    .spread((user, created) => { // spread operator used for returning multiple arguments.
+      if (created) {
+        const token = jwt.sign({
+          userId: user.id,
+          userName: user.username,
+          userRoleId: user.roleId
+        }, secret, { expiresIn: '1 day' });
+        return res.status(201).send({ message: `New User Created! Token: ${token} expires in a day.` })
+      }
+      return res.status(400).send({ message: 'User already exists' });
     });
 };
 
@@ -53,16 +56,48 @@ module.exports.userToken = (user) => jwt.sign(
 /**
  * Get a user data based on the email specified
  * @param {object} req
- * @param {function} done // Callback
+ * @param {function} res // Callback
  * @returns {object} specied user.
  */
-module.exports.getUser = (req, done) => {
+module.exports.getUser = (req, res) => {
+  if (!req.query) {
+    return res.status(401).send({ message: 'User unauthorised!' });
+  }
   User.find({
     where: {
-      email: req.user.email
+      username: req.params.username
     }
-  }).then(data => done(data))
-  .catch(() => false);
+  }).then(data => (data)
+    ? res.status(200).send({ user: data })
+    : res.status(404).send({ message: 'User not Found' })
+    );
+};
+
+/**
+ * Get a user data based on the email specified
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {object} specied user.
+ */
+module.exports.getAllUsers = (req, res) => {
+  if (!req.query) {
+    return res.status(401).send({ message: 'User unauthorised!' });
+  }
+
+  const jwtcode = req.headers.authorization;
+  try {
+    const token = jwt.verify(jwtcode, secret);
+    if (token && token.userRoleId === 1) {
+      User.findAll({}).then(data => (data)
+        ? res.status(200).send({ data })
+        : res.status(404).send({ message: 'No User Found' })
+      );
+    } else {
+      return res.status(401).send({ message: 'Only admin role can view all users!' });
+    }
+  } catch (e) {
+    return res.status(401).send({ message: 'User unauthorised!' });
+  }
 };
 
 /**
