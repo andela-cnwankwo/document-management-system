@@ -16,7 +16,6 @@ sequelize.sync({ });
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createUser = (req, res) => {
-  console.log(req.body);
   const newUser = req.body;
   User.findOrCreate({
     where: {
@@ -37,21 +36,45 @@ module.exports.createUser = (req, res) => {
           userName: user.username,
           userRoleId: user.roleId
         }, secret, { expiresIn: '1 day' });
-        return res.status(201).send({ message: `New User Created! Token: ${token} expires in a day.` })
+        return res.status(201).send({ message: `New User Created! Token: ${token} expires in a day.` });
       }
       return res.status(400).send({ message: 'User already exists' });
     });
 };
 
 /**
- * Get a user token
- * @param {object} user
- * @returns {string} specied user token.
+ * User login
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {promise} http response.
  */
-module.exports.userToken = (user) => jwt.sign(
-  { user: user.username, password: user.password }
-  , secret
-);
+module.exports.login = (req, res) => {
+  if (!req.query.username || !req.query.password) {
+    return res.status(400).send({ message: 'Invalid request, specify username and password' });
+  }
+
+  User.find({
+    where: {
+      username: req.query.username,
+      password: req.query.password
+    }
+  })
+  .then((data) => {
+    if (!data) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    const token = jwt.sign({
+      userId: data.id,
+      userName: data.username,
+      userRoleId: data.roleId
+    }, secret, { expiresIn: '1 day' });
+    return res.status(200).send({ message: `Login Successful! Token: ${token} expires in a day.` });
+  })
+  .catch(() =>
+    res.status(404).send({ message: 'User not found' })
+  );
+};
+
 
 /**
  * Get a user data based on the email specified

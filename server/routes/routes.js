@@ -13,18 +13,22 @@ router.get('/', (req, res) => (res.status(200))
     })
     : res.status(404));
 
-// Setup users route to create and retreive users.
+// Route to create and retreive users.
 router.route('/users')
   .post(userService.createUser)
   .get(validate.validateAdmin, userService.getAllUsers);
 
-// Setup route to retrieve single user data
+// Route to retrieve single user data
 router.route('/users/:username')
   .get(validate.validateToken, userService.getUser)
   // .put(validate.validateToken, userService.editUser)
   // .delete(validate.validateAdmin, userService.deleteUser)
 
-// Setup route to create roles
+// User login route
+router.route('/login')
+  .get(userService.login);
+
+// Route to create roles
 router.route('/roles')
   .post(validate.validateAdmin, roleService.createRole);
 
@@ -32,8 +36,7 @@ router.route('/roles')
 router.route('/roles/all')
   .get(validate.validateAdmin, roleService.getRoles);
 
-
-  // Setup route for documents
+// Route for documents
 router.route('/documents')
   .post(validate.validateToken, documentService.createDocument)
   .get(validate.validateToken, documentService.getAllDocuments);
@@ -42,12 +45,17 @@ router.route('/documents')
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument);
 
+// Retrieve limited documents
 router.route('/documents/all/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
+// Retrieve limited documents with offset
 router.route('/documents/all/:offset/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
+// Search documents
+router.route('/documents/find/:limit/:ownerRoleId/:date')
+  .get(validate.validateToken, documentService.searchDocuments);
 
 
 module.exports = router;

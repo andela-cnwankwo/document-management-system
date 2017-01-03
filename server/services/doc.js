@@ -29,7 +29,8 @@ module.exports.createDocument = (req, res) => {
       title: newDocument.title,
       access: newDocument.access,
       content: newDocument.content,
-      ownerId: newDocument.ownerId
+      ownerId: newDocument.ownerId,
+      ownerRoleId: newDocument.ownerId
     }
   })
     .spread((doc, created) => (doc)
@@ -58,7 +59,7 @@ module.exports.getDocument = (req, res) => {
       return res.status(200).send(data);
     }
     if (data && token.userRoleId === 2 && data.access === 'role') {
-      if (token.userRoleId === data.ownerId) {
+      if (token.userRoleId === data.ownerRoleId) {
         res.status(200).send(data);
       }
       return res.status(401).send({ message: 'Cannot Access document' });
@@ -76,41 +77,24 @@ module.exports.getDocument = (req, res) => {
 module.exports.getAllDocuments = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
-  token.userId = 1;
   if (token.userRoleId === 1) {
-    if (req.params.limit) {
-      Doc.findAll({ order: [['published', 'DESC']], limit: req.params.limit }).then(data => (data)
-        ? res.status(200).send(data)
-        : res.status(404).send({ message: 'Document Not Found' }));
-    } else if (req.params.offset) {
-      Doc.findAll({ order: [['published', 'DESC']], offset: req.params.offset, limit: req.params.limit }).then(data => (data)
-        ? res.status(200).send(data)
-        : res.status(404).send({ message: 'Document Not Found' }));
-    } else {
-      Doc.findAll({ order: [['published', 'DESC']] }).then(data => (data)
-        ? res.status(200).send(data)
-        : res.status(404).send({ message: 'Document Not Found' }));
-    }
+    Doc.findAll({ order: [['published', 'DESC']],
+      offset: req.params.offset,
+      limit: req.params.limit })
+        .then(data => (data)
+          ? res.status(200).send(data)
+          : res.status(404).send({ message: 'Document Not Found' }));
   } else {
-    Doc.findAll({
+    Doc.findAll({ order: [['published', 'DESC']],
+      limit: req.params.limit,
+      offset: req.params.offset,
       where: {
         $or: {
-          ownerId: {
-            $eq: token.userId
-          },
-          ownerRoleId: {
-            $eq: token.userRoleId
-          },
-          access: {
-            $eq: 'public'
-          },
+          ownerRoleId: token.userRoleId,
+          access: 'public',
           $and: {
-            access: {
-              $eq: 'private'
-            },
-            ownerId: {
-              $eq: token.userId
-            }
+            access: 'private',
+            ownerId: token.userId
           }
         }
       }
@@ -121,4 +105,10 @@ module.exports.getAllDocuments = (req, res) => {
       return res.status(200).send(data);
     });
   }
+};
+
+module.exports.searchDocuments = (req, res) => {
+  const jwtcode = req.headers.authorization;
+  const token = jwt.verify(jwtcode, secret);
+  console.log('Token is ::::::::', token);
 };

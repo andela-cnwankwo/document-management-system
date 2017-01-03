@@ -13,6 +13,9 @@ const validation = {
    * @returns {object} http callback.
    */
   validateToken(req, res, done) {
+    if (!req.query) {
+      return res.status(401).send({ message: 'User unauthorised!' });
+    }
     const jwtcode = req.headers.authorization;
     try {
       jwt.verify(jwtcode, secret, (err, token) => (err)
