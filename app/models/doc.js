@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'ownerId',
           onDelete: 'CASCADE',
         });
-        Doc.belongsTo(models.User, {
+        Doc.belongsTo(models.Role, {
           foreignKey: 'ownerRoleId',
           onDelete: 'CASCADE',
         });
