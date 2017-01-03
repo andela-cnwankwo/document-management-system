@@ -9,8 +9,6 @@ const secret = process.env.SECRET || 'documentmanagement';
 
 // Call the doc model and specify the arguments.
 const Doc = require('../../app/models/doc')(sequelize, Sequelize);
-const User = require('../../app/models/user')(sequelize, Sequelize);
-const Role = require('../../app/models/role')(sequelize, Sequelize);
 
 sequelize.sync({ });
 
@@ -117,5 +115,54 @@ module.exports.getAllDocuments = (req, res) => {
 module.exports.searchDocuments = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
-  console.log('Token is ::::::::', token);
+  let query;
+  if (token.userRoleId === 1) {
+    query = { ownerRoleId: req.params.ownerRoleId };
+    if (req.params.date) {
+      query = {
+        ownerRoleId: req.params.ownerRoleId,
+        published: {
+          $like: `%${req.params.date}%`
+        }
+      };
+    }
+  } else {
+    // If the user is trying to search a different role level, return unauthorised;
+    if (parseInt(req.params.ownerRoleId, 10) !== token.userRoleId) {
+      return res.status(401).send({ message: 'Cannot Access document' });
+    }
+    query = {
+      $or: {
+        ownerRoleId: token.userRoleId,
+        access: 'public',
+        $and: {
+          access: 'private',
+          ownerId: token.userId
+        }
+      }
+    };
+    if (req.params.date) {
+      query = {
+        $or: {
+          ownerRoleId: token.userRoleId,
+          access: 'public',
+          $and: {
+            access: 'private',
+            ownerId: token.userId
+          }
+        },
+        published: {
+          $like: `%${req.params.date}%`
+        }
+      };
+    }
+  }
+  console.log('Token::', token.userRoleId, req.params.date, query);
+  Doc.findAll({ order: [['published', 'DESC']],
+    limit: req.params.limit,
+    where: query
+  })
+  .then(data => (data)
+    ? res.status(200).send(data)
+    : res.status(404).send({ message: 'No Result Found' }));
 };

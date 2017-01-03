@@ -54,6 +54,9 @@ router.route('/documents/all/:offset/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
 // Search documents
+router.route('/documents/find/:limit/:ownerRoleId')
+  .get(validate.validateToken, documentService.searchDocuments);
+
 router.route('/documents/find/:limit/:ownerRoleId/:date')
   .get(validate.validateToken, documentService.searchDocuments);
 
