@@ -97,9 +97,7 @@ module.exports.getUser = (req, res) => {
  * @param {function} res // Callback
  * @returns {object} specied user.
  */
-module.exports.logout = (req, res) => {
-  return res.status(200).send({ message: 'Logout Successful' });
-};
+module.exports.logout = (req, res) => res.status(200).send({ message: 'Logout Successful' });
 
 /**
  * Update user information
@@ -113,6 +111,9 @@ module.exports.updateUser = (req, res) => {
       username: req.params.username
     }
   }).then((user) => {
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
     user.update({
       email: req.body.email,
       name: {
@@ -128,7 +129,9 @@ module.exports.updateUser = (req, res) => {
         userRoleId: updatedUser.roleId
       }, secret, { expiresIn: '1 day' });
       return res.status(200).send({ userToken: token, message: 'Update Successful! Token expires in a day.' });
-    });
+    })
+    .catch(err => res.status(404).send({ message: 'User not found' })
+    );
   });
 };
 
@@ -144,7 +147,7 @@ module.exports.deleteUser = (req, res) => {
       username: req.params.username
     }
   })
-  .then((data) => (data === 1)
+  .then(data => (data === 1)
     ? res.status(200).send({ message: 'User Removed' })
     : res.status(404).send({ message: 'User Not found' })
   );
