@@ -20,7 +20,7 @@ router.route('/users')
 
 // Route to retrieve single user data
 router.route('/users/:username')
-  .get(validate.validateToken, userService.getUser)
+  .get(validate.validateToken, userService.getUser);
   // .put(validate.validateToken, userService.editUser)
   // .delete(validate.validateAdmin, userService.deleteUser)
 

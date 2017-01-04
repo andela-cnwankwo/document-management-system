@@ -73,20 +73,20 @@
     //         });
     //     });
     // });
-describe('Search Documents', () => {
-  it('Should return documents limited by a number given a criteria and created by a specified role', (done) => {
-    request(server).get('/documents/find/1/1').expect(200)
-      .then(() => {
-        done();
-      });
-  });
+  // describe('Search Documents', () => {
+  //   it('Should return documents limited by a number given a criteria and created by a specified role', (done) => {
+  //     request(server).get('/documents/find/1/1').expect(200)
+  //       .then(() => {
+  //         done();
+  //       });
+  //   });
 
-  it('Should return documents created on a specified date', (done) => {
-    request(server).get(`/documents/find/1/1/${Date().substr(0, 15)}`).expect(200)
-      .then(() => {
-        done();
-      });
-  });
-});
+  //   it('Should return documents created on a specified date', (done) => {
+  //     request(server).get(`/documents/find/1/1/${Date().substr(0, 15)}`).expect(200)
+  //       .then(() => {
+  //         done();
+  //       });
+  //   });
+  // });
 //   });
 // });

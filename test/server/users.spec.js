@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 let fakeUser;
 let token;
+let headers;
 const secret = 'documentmanagement';
 
 describe('Document Management System', () => {
@@ -19,52 +20,39 @@ describe('Document Management System', () => {
 
   beforeEach(() => {
     fakeUser = factory.createUser();
-    token = jwt.sign(fakeUser, secret);
   });
 
   describe('User', () => {
     it('should create a new user', (done) => {
       request(server).post('/users').send({ fakeUser }).expect(201)
         .then((res) => {
-          // expect(res.body.message).to.equal('New User Created! Token expires in a day.');
+          token = res.userToken;
           done();
         });
     });
 
-    // it('should not create a user that already exists', (done) => {
-    //   request(server).post('/users').send({ user: fakeUser }).expect(200)
-    //     .then(() => {
-    //       request(server).post('/users').send({ user: fakeUser }).expect(400)
-    //         .then((res) => {
-    //           expect(res.body.message).to.equal('User already exists');
-    //           done();
-    //         });
-    //     });
-    // });
+    it('should create a unique user', (done) => {
+      request(server).post('/users').send({ fakeUser }).expect(201)
+        .then(() => {
+          request(server).post('/users').send({ fakeUser }).expect(400)
+            .then((res) => {
+              expect(res.body.message).to.equal('User already exists');
+              done();
+            });
+        });
+    });
 
-    // it('should create a unique user', (done) => {
-    //   request(server).post('/users').send({ user: fakeUser }).expect(200)
-    //     .then(() => {
-    //       request(server).get('/users/email').send({ user: fakeUser })
-    //         .expect(200)
-    //           .then((res) => {
-    //             expect(res.body.user.username).to.equal(fakeUser.username);
-    //             done();
-    //           });
-    //     });
-    // });
-
-    // it('should create users with default role of regular', (done) => {
-    //   request(server).post('/users').send({ user: fakeUser }).expect(200)
-    //     .then(() => {
-    //       request(server).get('/users/email').send({ user: fakeUser })
-    //         .expect(200)
-    //           .then((res) => {
-    //             expect(res.body.user.roleId).to.equal(2);
-    //             done();
-    //           });
-    //     });
-    // });
+    it('should create users with default role of regular', (done) => {
+      request(server).post('/users').send({ fakeUser }).expect(201)
+        .then((res) => {
+          request(server).get(`/users/${fakeUser.username}`)
+            .set('Authorization', `${res.body.userToken}`).expect(200)
+              .then((res) => {
+                expect(res.body.roleId).to.equal(2);
+                done();
+              });
+        });
+    });
 
     // it('should create users with both first and last names', (done) => {
     //   request(server).post('/users').send({ user: fakeUser }).expect(200)
