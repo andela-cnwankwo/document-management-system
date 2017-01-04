@@ -4,15 +4,13 @@
   "description": "Document management system to manage documents, users and user roles.",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
-    "travis:test": "NODE_ENV=travis ./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
+    "test": "./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
     "start": "node settings/server.js",
     "start:dev": "nodemon settings/app-config.js",
     "migrate": "sequelize db:migrate",
-    "seed": "NODE_ENV=travis node test/seed/testdata.js",
-    "testseed": "npm run seed && npm run migrate-travis",
-    "migrate-test": "NODE_ENV=test node_modules/.bin/sequelize db:migrate",
-    "migrate-travis": "NODE_ENV=travis node_modules/.bin/sequelize db:migrate"
+    "seed": "node test/seed/testdata.js",
+    "seedtravis": "NODE_ENV=travis npm run seed && NODE_ENV=travis npm run migrate-test",
+    "migrate-test": "node_modules/.bin/sequelize db:migrate"
   },
   "repository": {
     "type": "git",

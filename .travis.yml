@@ -7,11 +7,12 @@ services:
   - postgresql
 
 before_script:
+  - psql -c 'drop database if travis_ci_test;' -U postgres
   - psql -c 'create database travis_ci_test;' -U postgres
-  - npm run testseed
+  - npm run seedtravis
 
 script:
-  - npm run travis:test
+  - NODE_ENV=travis npm test
 
 after_script:
   - node node_modules/codeclimate-test-reporter/bin/codeclimate < coverage/lcov.info
