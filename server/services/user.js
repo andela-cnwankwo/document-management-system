@@ -97,6 +97,54 @@ module.exports.getUser = (req, res) => {
  * @param {function} res // Callback
  * @returns {object} specied user.
  */
+module.exports.logout = (req, res) => {
+  return res.status(200).send({ message: 'Logout Successful' });
+};
+
+/**
+ * Update user information
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {promise} http response.
+ */
+module.exports.updateUser = (req, res) => {
+  User.find({
+    where: {
+      username: req.params.username
+    }
+  }).then((user) => {
+    user.update({
+      email: req.body.email,
+      name: {
+        first: req.body.firstname,
+        last: req.body.lastname
+      },
+      password: req.body.password,
+      roleId: req.body.roleId
+    }).then((updatedUser) => {
+      const token = jwt.sign({
+        userId: updatedUser.id,
+        userName: updatedUser.username,
+        userRoleId: updatedUser.roleId
+      }, secret, { expiresIn: '1 day' });
+      return res.status(200).send({ userToken: token, message: 'Update Successful! Token expires in a day.' });
+    });
+  });
+};
+
+/**
+ * Delete a user
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {promise} http response.
+ */
+
+/**
+ * Get a user data based on the email specified
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {object} specied user.
+ */
 module.exports.getAllUsers = (req, res) => {
   User.findAll({}).then(data => (data)
     ? res.status(200).send({ data })

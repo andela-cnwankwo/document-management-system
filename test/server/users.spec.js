@@ -3,12 +3,8 @@ const request = require('supertest');
 const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
-const jwt = require('jsonwebtoken');
 
 let fakeUser;
-let token;
-let headers;
-const secret = 'documentmanagement';
 
 describe('Document Management System', () => {
   // Before running tests, drop all tables and recreate them
@@ -25,8 +21,7 @@ describe('Document Management System', () => {
   describe('User', () => {
     it('should create a new user', (done) => {
       request(server).post('/users').send(fakeUser).expect(201)
-        .then((res) => {
-          token = res.userToken;
+        .then(() => {
           done();
         });
     });

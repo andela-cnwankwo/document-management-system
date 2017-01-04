@@ -20,13 +20,16 @@ router.route('/users')
 
 // Route to retrieve single user data
 router.route('/users/:username')
-  .get(validate.validateToken, userService.getUser);
-  // .put(validate.validateToken, userService.editUser)
+  .get(validate.validateToken, userService.getUser)
+  .put(validate.validateToken, userService.updateUser);
   // .delete(validate.validateAdmin, userService.deleteUser)
 
 // User login route
 router.route('/login')
   .get(userService.login);
+
+router.route('/logout')
+  .get(userService.logout);
 
 // Route to create roles
 router.route('/roles')
