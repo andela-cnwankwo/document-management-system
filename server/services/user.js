@@ -138,6 +138,17 @@ module.exports.updateUser = (req, res) => {
  * @param {function} res // Callback
  * @returns {promise} http response.
  */
+module.exports.deleteUser = (req, res) => {
+  User.destroy({
+    where: {
+      username: req.params.username
+    }
+  })
+  .then((data) => (data === 1)
+    ? res.status(200).send({ message: 'User Removed' })
+    : res.status(404).send({ message: 'User Not found' })
+  );
+};
 
 /**
  * Get a user data based on the email specified
