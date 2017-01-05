@@ -11,6 +11,7 @@ let fakeAdminToken;
 
 describe('Document Management System', () => {
   // Before running tests, drop all tables and recreate them
+  // Create a default user and a default admin
   before((done) => {
     sequelize.sync({ force: true }).then(() => {
       fakeUser = factory.createUser();

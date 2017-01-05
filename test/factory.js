@@ -24,3 +24,10 @@ module.exports.createDocument = () => {
   };
   return fakeDocument;
 };
+
+module.exports.createRole = () => {
+  const fakeRole = {
+    title: faker.lorem.word(),
+  };
+  return fakeRole;
+};

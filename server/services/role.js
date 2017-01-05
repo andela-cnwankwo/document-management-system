@@ -18,15 +18,15 @@ sequelize.sync({ });
 module.exports.createRole = (req, res) => {
   Role.findOrCreate({
     where: {
-      title: req.body.newrole.title
+      title: req.body.title
     },
     defaults: {
-      title: req.body.newrole.title
+      title: req.body.title
     }
   })
   .spread((role, created) => (created)
-    ? res.status(200).send({ message: 'Role Updated!' })
-    : res.status(200).send({ message: 'Already Exists!' }));
+    ? res.status(201).send({ message: 'Role Added!' })
+    : res.status(400).send({ message: 'Role Already Exists!' }));
 };
 
 // /**
@@ -43,13 +43,31 @@ module.exports.createRole = (req, res) => {
 //   }
 // };
 
+
+/**
+ * Get role
+ * @param {object} req
+ * @param {function} res // Callback
+ * @returns {object} specified role.
+ */
+module.exports.getRole = (req, res) => {
+  Role.find({
+    where: {
+      title: req.params.title
+    }
+  }).then((role) => (role)
+    ? res.status(200).send(role)
+    : res.status(404).send({ message: 'Role Not found' })
+  );
+};
+
 /**
  * Get all roles
  * @param {object} req
- * @param {function} done // Callback
+ * @param {function} res // Callback
  * @returns {object} all roles.
  */
-module.exports.getRoles = (req, res) => {
+module.exports.getAllRoles = (req, res) => {
   Role.findAll().then((roles) => (roles)
     ? res.status(200).send(roles)
     : res.status(404).send({ message: 'No role found' })

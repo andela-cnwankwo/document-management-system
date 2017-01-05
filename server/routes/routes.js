@@ -37,7 +37,11 @@ router.route('/roles')
 
 // Retrieve all roles
 router.route('/roles/all')
-  .get(validate.validateAdmin, roleService.getRoles);
+  .get(validate.validateAdmin, roleService.getAllRoles);
+
+// Retrieve a single role
+router.route('/roles/:title')
+  .get(validate.validateAdmin, roleService.getRole);
 
 // Route for documents
 router.route('/documents')
