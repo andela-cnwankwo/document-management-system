@@ -20,7 +20,8 @@ module.exports.createDocument = () => {
     title: faker.lorem.word(),
     access: 'public',
     content: faker.lorem.sentences(),
-    ownerId: 2
+    ownerId: 2,
+    ownerRoleId: 2
   };
   return fakeDocument;
 };

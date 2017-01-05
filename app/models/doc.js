@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'public'
     },
     content: DataTypes.TEXT,
-    ownerId: DataTypes.INTEGER
+    ownerId: DataTypes.INTEGER,
+    ownerRoleId: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: (models) => {

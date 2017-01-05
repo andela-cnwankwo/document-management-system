@@ -19,7 +19,9 @@ sequelize.sync({ });
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createDocument = (req, res) => {
-  const newDocument = req.body.document;
+  const jwtcode = req.headers.authorization;
+  const token = jwt.verify(jwtcode, secret);
+  const newDocument = req.body;
   Doc.findOrCreate({
     where: {
       title: newDocument.title
@@ -29,12 +31,12 @@ module.exports.createDocument = (req, res) => {
       title: newDocument.title,
       access: newDocument.access,
       content: newDocument.content,
-      ownerId: newDocument.ownerId,
-      ownerRoleId: newDocument.ownerRoleId
+      ownerId: token.userId,
+      ownerRoleId: token.userRoleId
     }
   })
-    .spread((doc, created) => (doc)
-        ? res.status(200).send(doc)
+    .spread((doc, created) => (created)
+        ? res.status(201).send(doc)
         : res.status(400).send({ message: 'Could not create document' }));
 };
 
