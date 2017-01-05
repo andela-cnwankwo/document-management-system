@@ -53,7 +53,7 @@ describe('Document Management System', () => {
 
     it('should create users with default role of regular', (done) => {
       request(server).get(`/users/${fakeUser.username}`)
-        .set('Authorization', `${fakeUserToken}`).expect(200)
+        .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body.roleId).to.equal(2);
             done();
@@ -62,7 +62,7 @@ describe('Document Management System', () => {
 
     it('should return 404 when the user is not found', (done) => {
       request(server).get('/users/fakeUser.username.not.found')
-        .set('Authorization', `${fakeUserToken}`).expect(404)
+        .set('Authorization', fakeUserToken).expect(404)
           .then((res) => {
             expect(res.body.message).to.equal('User not Found');
             done();
@@ -71,7 +71,7 @@ describe('Document Management System', () => {
 
     it('should create users with both first and last names', (done) => {
       request(server).get(`/users/${fakeUser.username}`)
-        .set('Authorization', `${fakeUserToken}`).expect(200)
+        .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body.name.first).to.equal(fakeUser.name.first);
             expect(res.body.name.last).to.equal(fakeUser.name.last);
@@ -114,7 +114,7 @@ describe('Document Management System', () => {
     it('should return all users if the current user has an admin role',
       (done) => {
         request(server)
-          .get('/users').set('Authorization', `${fakeAdminToken}`)
+          .get('/users').set('Authorization', fakeAdminToken)
             .expect(200)
               .then(() => {
                 done();
@@ -124,7 +124,7 @@ describe('Document Management System', () => {
 
     it('should return unauthorised if the user is not an admin', (done) => {
       request(server)
-        .get('/users').set('Authorization', `${fakeUserToken}`).expect(401)
+        .get('/users').set('Authorization', fakeUserToken).expect(401)
         .then((res) => {
           expect(res.body.message).to.equal('User unauthorised! login as admin');
           done();
@@ -141,14 +141,14 @@ describe('Document Management System', () => {
           },
           password: 'ethan',
           roleId: 1
-        }).set('Authorization', `${fakeUserToken}`)
+        }).set('Authorization', fakeUserToken)
           .expect(200)
             .then(() => {
               done();
             });
     });
 
-    it('should return not found for an unknown user', (done) => {
+    it('should return 404 response if user detail is not found', (done) => {
       request(server)
         .put('/users/invalid.app.username').send({
           email: 'Ethanet@email.com',
@@ -158,7 +158,7 @@ describe('Document Management System', () => {
           },
           password: 'ethan',
           roleId: 1
-        }).set('Authorization', `${fakeUserToken}`)
+        }).set('Authorization', fakeUserToken)
           .expect(404)
             .then(() => {
               done();
@@ -168,17 +168,17 @@ describe('Document Management System', () => {
     it('should delete a user if requested by admin', (done) => {
       request(server)
         .delete(`/users/${fakeAdmin.username}`)
-          .set('Authorization', `${fakeAdminToken}`)
+          .set('Authorization', fakeAdminToken)
             .expect(200)
               .then(() => {
                 done();
               });
     });
 
-    it('should return not found for an unknown user', (done) => {
+    it('should return 404 if not user record is found to delete', (done) => {
       request(server)
         .delete('/users/delete.invalid_user')
-          .set('Authorization', `${fakeAdminToken}`)
+          .set('Authorization', fakeAdminToken)
             .expect(404)
               .then(() => {
                 done();

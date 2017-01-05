@@ -50,12 +50,12 @@ describe('Document', () => {
           });
     });
 
-    it('should create a document with access as public by default ', (done) => {
+    it('should create a document with owner ', (done) => {
       request(server).get(`/documents/${fakeDocument.id}`)
       .set('Authorization', fakeUserToken)
         .expect(200)
           .then((res) => {
-            expect(res.body.access).to.equal('public');
+            expect(res.body.ownerId).to.not.equal(undefined);
             done();
           });
     });
@@ -87,6 +87,14 @@ describe('Document', () => {
     it('should retrieve all documents if requested by the admin', (done) => {
       request(server).get('/documents')
       .set('Authorization', fakeAdminToken).expect(200)
+        .then(() => {
+          done();
+        });
+    });
+
+    it('should retrieve all documents a user can access if not admin', (done) => {
+      request(server).get('/documents')
+      .set('Authorization', fakeUserToken).expect(200)
         .then(() => {
           done();
         });

@@ -66,10 +66,7 @@ module.exports.login = (req, res) => {
       userRoleId: data.roleId
     }, secret, { expiresIn: '1 day' });
     return res.status(200).send({ userToken: token, message: 'Login Successful! Token expires in a day.' });
-  })
-  .catch(() =>
-    res.status(404).send({ message: 'User not found' })
-  );
+  });
 };
 
 
@@ -129,9 +126,7 @@ module.exports.updateUser = (req, res) => {
         userRoleId: updatedUser.roleId
       }, secret, { expiresIn: '1 day' });
       return res.status(200).send({ userToken: token, message: 'Update Successful! Token expires in a day.' });
-    })
-    .catch(err => res.status(404).send({ message: 'User not found' })
-    );
+    });
   });
 };
 
