@@ -16,15 +16,15 @@
       "dialect": "postgres"
     },
      "travis": {
-      "username": "postgres",
-      "password": "",
+      "username": null,
+      "password": null,
       "database": "travis_ci_test",
       "host": "127.0.0.1",
       "port": "5432",
       "dialect": "postgres"
     },
   "production": {
-    "username": "root",
+    "username": null,
     "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
