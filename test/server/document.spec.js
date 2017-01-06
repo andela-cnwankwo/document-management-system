@@ -6,11 +6,15 @@ const sequelize = require('../test-helper');
 
 let fakeDocument,
   fakeUser,
-  fakeAdmin,
   testUser,
-  testUserToken,
+  fakeAdmin,
+  testAdmin,
+  testAdminToken,
   fakeUserToken,
-  fakeAdminToken;
+  fakeAdminToken,
+  testUserToken,
+  fakeRoleDocument,
+  fakeRoleDocumentId;
 
 describe('Document', () => {
   // Before running tests, drop all tables and recreate them
@@ -19,19 +23,27 @@ describe('Document', () => {
     sequelize.sync({ force: true }).then(() => {
       fakeDocument = factory.createDocument();
       fakeUser = factory.createUser();
+      testUser = factory.createUser();
       fakeAdmin = factory.createUser();
       fakeAdmin.roleId = 1;
-      testUser = factory.createUser();
+      fakeRoleDocument = factory.createDocument();
+      fakeRoleDocument.access = 'role';
+      testAdmin = factory.createUser();
+      testAdmin.roleId = 1;
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {
           fakeAdminToken = res.body.userToken;
           request(server).post('/users').send(fakeUser)
             .then((res) => {
               fakeUserToken = res.body.userToken;
-              request(server).post('/users').send(testUser)
+              request(server).post('/users').send(testAdmin)
                 .then((res) => {
-                  testUserToken = res.body.userToken;
-                  done();
+                  testAdminToken = res.body.userToken;
+                  request(server).post('/users').send(testUser)
+                    .then((res) => {
+                      testUserToken = res.body.userToken;
+                      done();
+                    });
                 });
             });
         });
@@ -126,41 +138,40 @@ describe('Document', () => {
             request(server).get(`/documents/${res.body.id}`)
             .set('Authorization', fakeUserToken).expect(401)
               .then((response) => {
-                expect(response.body.message).to.equal('Cannot Access private document');
+                expect(response.body.message).to.equal('Cannot Access document');
                 done();
               });
           });
     });
 
-    it('should return documents with role access if requested by user of same role', (done) => {
-      const fakeRoleDocument = factory.createDocument();
-      fakeRoleDocument.access = 'role';
+    it('should return documents if requested by owner', (done) => {
       request(server).post('/documents').send(fakeRoleDocument)
       .set('Authorization', fakeUserToken)
         .expect(201)
           .then((res) => {
-            request(server).get(`/documents/${res.body.id}`)
-            .set('Authorization', testUserToken).expect(200)
+            fakeRoleDocumentId = res.body.id;
+            request(server).get(`/documents/${fakeRoleDocumentId}`)
+            .set('Authorization', fakeUserToken).expect(200)
               .then(() => {
                 done();
               });
           });
     });
 
-    it('should not return documents if requested by user of another role', (done) => {
-      const fakeRoleDocument = factory.createDocument();
-      fakeRoleDocument.access = 'role';
-      request(server).post('/documents').send(fakeRoleDocument)
-      .set('Authorization', fakeAdminToken)
-        .expect(201)
-          .then((res) => {
-            request(server).get(`/documents/${res.body.id}`)
-            .set('Authorization', testUserToken).expect(401)
-              .then((response) => {
-                expect(response.body.message).to.equal('Cannot Access document');
-                done();
-              });
-          });
+    it('should return documents if requested by Admin', (done) => {
+      request(server).get(`/documents/${fakeRoleDocumentId}`)
+      .set('Authorization', fakeAdminToken).expect(200)
+        .then(() => {
+          done();
+        });
+    });
+
+    it('should return documents if requested by user of same role', (done) => {
+      request(server).get(`/documents/${fakeRoleDocumentId}`)
+      .set('Authorization', testUserToken).expect(200)
+        .then(() => {
+          done();
+        });
     });
 
     it('Should return documents limited by a number', (done) => {

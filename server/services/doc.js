@@ -64,13 +64,10 @@ module.exports.getDocument = (req, res) => {
     if (data.ownerId === token.userId) {
       return res.status(200).send(data);
     }
-    if (data && token.userRoleId === 2 && data.access === 'role') {
-      if (token.userRoleId === data.dataValues.ownerRoleId) {
-        return res.status(200).send(data);
-      }
-      return res.status(401).send({ message: 'Cannot Access document' });
+    if (data && token.userRoleId === data.dataValues.ownerRoleId && data.access === 'role') {
+      return res.status(200).send(data);
     }
-    return res.status(401).send({ message: 'Cannot Access private document' });
+    return res.status(401).send({ message: 'Cannot Access document' });
   });
 };
 
