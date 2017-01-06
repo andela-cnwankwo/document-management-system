@@ -7,11 +7,11 @@ const validate = require('../middlewares/auth');
 const router = express.Router();
 
 // Setup default route
-router.get('/', (req, res) => (res.status(200))
-    ? res.status(200).send({
-      message: 'Welcome to the Document Management App!'
-    })
-    : res.status(404));
+router.get('/', (req, res) => {
+  res.status(200).send({
+    message: 'Welcome to the Document Management App!'
+  });
+});
 
 // Route to create and retreive users.
 router.route('/users')

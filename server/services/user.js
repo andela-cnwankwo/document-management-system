@@ -34,7 +34,7 @@ module.exports.createUser = (req, res) => {
           userName: user.username,
           userRoleId: user.roleId
         }, secret, { expiresIn: '1 day' });
-        return res.status(201).send({ userToken: token, message: 'New User Created! Token expires in a day.' });
+        return res.status(201).send({ user, userToken: token, message: 'New User Created! Token expires in a day.' });
       }
       return res.status(400).send({ message: 'User already exists' });
     });

@@ -60,6 +60,22 @@ describe('Document', () => {
           });
     });
 
+    it('should not re-create a document that is already created', (done) => {
+      const fakeDuplicateDocument = factory.createDocument();
+      request(server).post('/documents').send(fakeDuplicateDocument)
+      .set('Authorization', fakeUserToken)
+        .expect(201)
+          .then(() => {
+            request(server).post('/documents').send(fakeDuplicateDocument)
+              .set('Authorization', fakeUserToken)
+                .expect(409)
+                  .then((res) => {
+                    expect(res.body.message).to.equal('Document already exist');
+                    done();
+                  });
+          });
+    });
+
     it('should retrieve private documents if requested by owner', (done) => {
       const fakePrivateDocument = factory.createDocument();
       fakePrivateDocument.access = 'private';

@@ -29,21 +29,6 @@ module.exports.createRole = (req, res) => {
     : res.status(400).send({ message: 'Role Already Exists!' }));
 };
 
-// /**
-//  * Get a created role
-//  * @param {object} req
-//  * @param {function} done // Callback
-//  * @returns {object} specified role.
-//  */
-// module.exports.getRoles = (req, done) => {
-//   if (req.title) {
-//     Role.findOne({ where: { title: req.title } }).then((data) => {
-//       done(data);
-//     });
-//   }
-// };
-
-
 /**
  * Get role
  * @param {object} req

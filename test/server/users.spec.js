@@ -33,7 +33,8 @@ describe('Document Management System', () => {
     it('should create a new user', (done) => {
       const newUser = factory.createUser();
       request(server).post('/users').send(newUser).expect(201)
-        .then(() => {
+        .then((res) => {
+          expect(res.body.user).to.have.property('roleId');
           done();
         });
     });
@@ -55,6 +56,7 @@ describe('Document Management System', () => {
       request(server).get(`/users/${fakeUser.username}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
+            expect(res.body).to.have.property('roleId');
             expect(res.body.roleId).to.equal(2);
             done();
           });

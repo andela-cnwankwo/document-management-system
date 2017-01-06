@@ -37,7 +37,7 @@ module.exports.createDocument = (req, res) => {
   })
     .spread((doc, created) => (created)
         ? res.status(201).send(doc)
-        : res.status(400).send({ message: 'Could not create document' }));
+        : res.status(409).send({ message: 'Document already exist' }));
 };
 
 /**
@@ -159,7 +159,6 @@ module.exports.searchDocuments = (req, res) => {
       };
     }
   }
-  console.log('Token::', token.userRoleId, req.params.date, query);
   Doc.findAll({ order: [['published', 'DESC']],
     limit: req.params.limit,
     where: query
