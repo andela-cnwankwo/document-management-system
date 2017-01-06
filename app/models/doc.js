@@ -1,6 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const Doc = sequelize.define('Doc', {
-    published: DataTypes.STRING,
+    published: {
+      type: DataTypes.STRING,
+      defaultValue: Date()
+    },
     title: DataTypes.STRING,
     access: {
       type: DataTypes.STRING,

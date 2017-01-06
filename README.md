@@ -61,7 +61,7 @@ Requests to protected routes are validated using the generated token.
     - Clone this repository by running the command on the terminal: `git clone https://github.com/andela-cnwankwo/document-management-system.git`
     - Navigate to the project folder and install the packages/modules using: `npm install`
     - Start the server by running: `npm start`
-    - Use an API testing platform ( `e.g. Postman `) to test the endpoints ( `see Endpoints Section below` )
+    - Use an API testing platform ( `e.g. Postman `) to test the endpoints ( `see endpoints below` )
 
 ## Requirements
 This application requires NodeJS, NPM package manager and PostgreSQL installed.
@@ -73,27 +73,77 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 
 <table> 
 <tr>
-<th> *Endpoint* </th> <th> *Method* </th> <th> *Action* </th> <th> * Payload Data * </th> <th> * Authorization * </th>
+<th> Endpoint </th> <th> Method </th> <th> Action </th> <th> Payload Data </th> <th> Authorization </th>
 </tr>
 <tr>
-<td> `/users` </td> <td> `POST` </td> <td> create a new user </td> <td> `username, name: (e.g. name: { first, last }), email, password, roleId` </td> <td> `none` </td>
+<td> /users </td> <td> POST </td> <td> create a new user </td> <td> username, name: (e.g. name: { first, last }), email, password, roleId </td> <td> none </td>
 </tr>
 <tr>
-<td> `/users` </td> <td> `GET` </td> <td> show all registered users </td> <td> `none` </td> <td> `admin` </td>
+<td> /users </td> <td> GET </td> <td> show all registered users </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
-<td> `/login` </td> <td> `GET` </td> <td> login a registered user </td> <td> `username and password as request parameters.` </td> <td> `none` </td>
+<td> /login </td> <td> GET </td> <td> login a registered user </td> <td> username and password as request parameters. </td> <td> none </td>
 </tr>
 <tr>
-<td> `/logout` </td> <td> `GET` </td> <td> logout a user </td> <td> `none` </td> <td> `none` </td>
+<td> /logout </td> <td> GET </td> <td> logout a user </td> <td> none </td> <td> none </td>
 </tr>
 <tr>
-<td> `/users/username` </td> <td> `GET` </td> <td> get a user </td> <td> `none` </td> <td> `all users` </td>
+<td> /users/`username` </td> <td> GET </td> <td> get a user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> `/users/username` </td> <td> `PUT` </td> <td> Update user record</td> <td> `new user data` </td> <td> `current user and admin` </td>
+<td> /users/`username` </td> <td> PUT </td> <td> Update user record</td> <td> new user data </td> <td> Current user and admin </td>
 </tr>
 <tr>
-<td> `/users/username` </td> <td> `DELETE` </td> <td> Remove a user record</td> <td> `none` </td> <td> `admin` </td>
+<td> /users/`username` </td> <td> DELETE </td> <td> Remove a user record</td> <td> none </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles </td> <td> POST </td> <td> Creates a new role </td> <td> title </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles/all </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles/`title` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
+</tr>
+<tr>
+<td> /documents </td> <td> POST </td> <td> Create a new document </td> <td> title, content, access, ownerId, ownerRoleId </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents </td> <td> GET </td> <td> Shows all documents accessible to the current user</td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/`id` </td> <td> GET </td> <td> Shows a document accessible to the current user </td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/all/`limit` </td> <td> GET </td> <td> Shows a specified number documents accessible to the current user </td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/all/`offset`/`limit` </td> <td> GET </td> <td> Shows a specified number documents skipping the specified offset (i.e. 2) accessible to the current user </td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/find/`limit` </td> <td> GET </td> <td> Searches for a specified number documents accessible to the current user </td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/find/`limit`/`ownerRoleId` </td> <td> GET </td> <td> Searches for number of documents by a given role accessible to the current user </td> <td> none </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/find/`limit`/`ownerRoleId`/`date` </td> <td> GET </td> <td> Searches for a number of documents by a given role published on a given date accessible to the current user </td> <td> date format usually Fri Jan 06 2017 </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/find/`username` </td> <td> GET </td> <td> Searches for documents by a given user accessible to the current user </td> <td> none</td> <td> All users </td>
 </tr>
 </table>
+
+## Test
+- *steps*:
+    - Create a new postgres database
+    - Update the `test` environment in `settings/config.json` with your database information
+    - Seed data into your new database using the command: `NODE_ENV=test npm run seed`
+    - Migrate the database models using the command: `NODE_ENV=test npm run migrate-test`
+    - Test the application using the command: `NODE_ENV=test npm test`
+
+## Collaboration
+To contribute to this application;
+- Fork the project repository from [here](https://github.com/andela-cnwankwo/document-management-system).
+- Create a new branch and make your desired contributions
+- Push to github and open a pull request.

@@ -8,7 +8,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       published: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: Date()
       },
       title: {
         type: Sequelize.STRING
