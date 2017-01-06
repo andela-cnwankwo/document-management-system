@@ -221,6 +221,15 @@ describe('Document', () => {
             done();
           });
       });
+
+      it('Should return search results limited by a number ', (done) => {
+        const limit = 1;
+        request(server).get(`/documents/find/${limit}`)
+        .set('Authorization', fakeAdminToken).expect(200)
+          .then(() => {
+            done();
+          });
+      });
     });
   });
 });

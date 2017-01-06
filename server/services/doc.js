@@ -87,9 +87,7 @@ module.exports.getAllDocuments = (req, res) => {
     Doc.findAll({ order: [['published', 'DESC']],
       offset: req.params.offset,
       limit: req.params.limit })
-        .then(data => (data)
-          ? res.status(200).send(data)
-          : res.status(404).send({ message: 'Document Not Found' }));
+        .then(data => res.status(200).send(data));
   } else {
     Doc.findAll({ order: [['published', 'DESC']],
       limit: req.params.limit,
@@ -105,12 +103,8 @@ module.exports.getAllDocuments = (req, res) => {
         }
       },
       attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
-    }).then((data) => {
-      if (!data) {
-        return res.status(404).send({ message: 'Document Not Found' });
-      }
-      return res.status(200).send(data);
-    });
+    }).then((data) => res.status(200).send(data)
+      );
   }
 };
 

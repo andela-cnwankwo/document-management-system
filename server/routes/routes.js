@@ -60,6 +60,10 @@ router.route('/documents/all/:limit')
 router.route('/documents/all/:offset/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
+// Search documents by limit alone
+router.route('/documents/find/:limit')
+  .get(validate.validateToken, documentService.getAllDocuments);
+
 // Search documents
 router.route('/documents/find/:limit/:ownerRoleId')
   .get(validate.validateToken, documentService.searchDocuments);

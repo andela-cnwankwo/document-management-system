@@ -177,7 +177,7 @@ describe('Document Management System', () => {
               });
     });
 
-    it('should return 404 if not user record is found to delete', (done) => {
+    it('should return 404 if no user record is found to delete', (done) => {
       request(server)
         .delete('/users/delete.invalid_user')
           .set('Authorization', fakeAdminToken)
