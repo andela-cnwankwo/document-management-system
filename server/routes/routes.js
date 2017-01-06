@@ -64,6 +64,11 @@ router.route('/documents/all/:offset/:limit')
 router.route('/documents/find/:limit')
   .get(validate.validateToken, documentService.getAllDocuments);
 
+// @TODO: create a route to get documents uploaded by a given user
+// Search documents by username
+router.route('/documents/find/:username')
+  .get(validate.validateToken, documentService.getAllDocuments);
+
 // Search documents
 router.route('/documents/find/:limit/:ownerRoleId')
   .get(validate.validateToken, documentService.searchDocuments);

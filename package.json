@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover _mocha test -- -R spec test/**/*.spec.js",
-    "start": "node settings/server.js",
-    "start:dev": "nodemon settings/app-config.js",
+    "start": "nodemon settings/app-config.js",
     "migrate": "sequelize db:migrate",
     "seed": "node test/seed/testdata.js",
     "seedtravis": "NODE_ENV=travis npm run seed && NODE_ENV=travis npm run migrate-test",
@@ -42,6 +41,7 @@
     "babel-core": "^6.18.2",
     "babel-polyfill": "^6.16.0",
     "babel-register": "^6.18.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
     "codeclimate-test-reporter": "^0.4.0",
     "coveralls": "^2.11.15",
