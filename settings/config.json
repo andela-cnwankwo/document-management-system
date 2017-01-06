@@ -1,15 +1,15 @@
 {
   "development": {
-      "username": "node",
-      "password": "node",
+      "username": null,
+      "password": null,
       "database": "dms",
       "host": "127.0.0.1",
       "port": "5432",
       "dialect": "postgres"
     },
     "test": {
-      "username": "node",
-      "password": "node",
+      "username": null,
+      "password": null,
       "database": "testdms",
       "host": "127.0.0.1",
       "port": "5432",

@@ -17,7 +17,7 @@ This application is built using NodeJS, Express and Postgres
 This application has the following features:
 
 ### Users:
-A user created can either be an admin or a regular user.
+A created user will have a role, either an admin or a regular user by default.
 - A Regular User can: 
     - Create an account
     - Login
@@ -137,7 +137,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 ## Test
 - *steps*:
     - Create a new postgres database
-    - Update the `test` environment in `settings/config.json` with your database information
+    - Update the `.env.sample` file with your database information and rename it to `.env`
     - Seed data into your new database using the command: `NODE_ENV=test npm run seed`
     - Migrate the database models using the command: `NODE_ENV=test npm run migrate-test`
     - Test the application using the command: `NODE_ENV=test npm test`

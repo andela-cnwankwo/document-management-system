@@ -1,24 +1,14 @@
 const expect = require('chai').expect;
 const factory = require('../factory');
-const request = require('supertest');
 const sequelize = require('../test-helper');
-const server = require('../../settings/app-config');
 const model = require('../../app/models');
 
-let fakeUser;
-let fakeUserToken;
 let fakeDocument;
 describe('Document Management System', () => {
   // Before running tests, synchronize the tables
   before((done) => {
     sequelize.sync({ }).then(() => {
-      fakeUser = factory.createUser();
-      request(server).post('/users').send(fakeUser)
-        .then((res) => {
-          fakeUser = res.body.user;    // Reassign fakeuser to the created user data
-          fakeUserToken = res.body.userToken;
-          done();
-        });
+      done();
     });
   });
 

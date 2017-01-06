@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const env = process.env.NODE_ENV || 'development';
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +11,7 @@ const basename = path.basename(module.filename);
 
 const sequelize = (config.use_env_variable)
   ? new Sequelize(process.env[config.use_env_variable])
-  : new Sequelize(config.database, config.username, config.password, config);
+  : new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, config);
 
 fs
   .readdirSync(__dirname)
