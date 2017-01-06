@@ -14,7 +14,9 @@ let fakeDocument,
   fakeAdminToken,
   testUserToken,
   fakeRoleDocument,
-  fakeRoleDocumentId;
+  fakeRoleDocumentId,
+  fakePrivateDocument,
+  fakePrivateDocumentId;
 
 describe('Document', () => {
   // Before running tests, drop all tables and recreate them
@@ -30,6 +32,8 @@ describe('Document', () => {
       fakeRoleDocument.access = 'role';
       testAdmin = factory.createUser();
       testAdmin.roleId = 1;
+      fakePrivateDocument = factory.createDocument();
+      fakePrivateDocument.access = 'private';
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {
           fakeAdminToken = res.body.userToken;
@@ -89,13 +93,12 @@ describe('Document', () => {
     });
 
     it('should retrieve private documents if requested by owner', (done) => {
-      const fakePrivateDocument = factory.createDocument();
-      fakePrivateDocument.access = 'private';
       request(server).post('/documents').send(fakePrivateDocument)
       .set('Authorization', fakeUserToken)
         .expect(201)
           .then((res) => {
-            request(server).get(`/documents/${res.body.id}`)
+            fakePrivateDocumentId = res.body.id;
+            request(server).get(`/documents/${fakePrivateDocumentId}`)
             .set('Authorization', fakeUserToken).expect(200)
               .then(() => {
                 done();
@@ -129,19 +132,12 @@ describe('Document', () => {
     });
 
     it('should not return private documents if requested by another user', (done) => {
-      const privateDocument = factory.createDocument();
-      privateDocument.access = 'private';
-      request(server).post('/documents').send(privateDocument)
-      .set('Authorization', fakeAdminToken)
-        .expect(201)
-          .then((res) => {
-            request(server).get(`/documents/${res.body.id}`)
-            .set('Authorization', fakeUserToken).expect(401)
-              .then((response) => {
-                expect(response.body.message).to.equal('Cannot Access document');
-                done();
-              });
-          });
+      request(server).get(`/documents/${fakePrivateDocumentId}`)
+      .set('Authorization', testUserToken).expect(401)
+        .then((response) => {
+          expect(response.body.message).to.equal('Cannot Access document');
+          done();
+        });
     });
 
     it('should return documents if requested by owner', (done) => {
