@@ -10,7 +10,7 @@ const secret = process.env.SECRET || 'documentmanagement';
 // Call the doc model and specify the arguments.
 const Doc = require('../../app/models/doc')(sequelize, Sequelize);
 
-sequelize.sync({ });
+sequelize.sync({});
 
 /**
  * Create a new document
