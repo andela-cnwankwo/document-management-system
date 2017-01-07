@@ -52,6 +52,15 @@ describe('Document Management System', () => {
         });
     });
 
+    it('should return error for login if password is incorrect', (done) => {
+      // Default admin account seeded into the database.
+      request(server).get('/login?username=admin&password=wrongpassword').expect(400)
+        .then((res) => {
+          expect(res.body.message).to.equal('Invalid password');
+          done();
+        });
+    });
+
     it('should create users with default role of regular', (done) => {
       request(server).get(`/users/${fakeUser.username}`)
         .set('Authorization', fakeUserToken).expect(200)

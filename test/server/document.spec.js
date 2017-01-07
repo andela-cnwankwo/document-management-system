@@ -237,6 +237,14 @@ describe('Document', () => {
             done();
           });
       });
+
+      it('Should return all documents of a specified if requested ', (done) => {
+        request(server).get(`/documents/find/all/${fakeUser.username}`)
+        .set('Authorization', fakeAdminToken).expect(200)
+          .then(() => {
+            done();
+          });
+      });
     });
   });
 });

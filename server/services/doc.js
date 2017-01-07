@@ -50,7 +50,7 @@ module.exports.createDocument = (req, res) => {
 module.exports.getDocument = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
-  Doc.findAll({
+  Doc.find({
     where: {
       id: req.params.id
     },
