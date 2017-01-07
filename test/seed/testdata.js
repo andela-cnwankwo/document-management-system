@@ -1,5 +1,6 @@
 const faker = require('faker');
 const model = require('../../app/models');
+const bcrypt = require('bcrypt-nodejs');
 
 /**
  * seedData class to generate test user data
@@ -58,24 +59,24 @@ class seedData {
   seedUsers() {
     const users = [
       {
-        username: faker.internet.userName(),
+        username: 'admin',
         name: { first: faker.name.firstName(), last: faker.name.lastName() },
         email: 'admin@dms.com',
-        password: faker.internet.password(),
+        password: bcrypt.hashSync('admin'),
         roleId: 1
       },
       {
-        username: faker.internet.userName(),
+        username: 'regular',
         name: { first: faker.name.firstName(), last: faker.name.lastName() },
-        email: 'user@dms.com',
-        password: faker.internet.password(),
+        email: 'regular@dms.com',
+        password: bcrypt.hashSync('regular'),
         roleId: 2
       },
       {
         username: faker.internet.userName(),
         name: { first: faker.name.firstName(), last: faker.name.lastName() },
         email: faker.internet.email(),
-        password: faker.internet.password(),
+        password: bcrypt.hashSync(faker.internet.password()),
         roleId: 2
       }
     ];

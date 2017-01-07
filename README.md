@@ -144,6 +144,9 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 
 ## Collaboration
 To contribute to this application;
-- Fork the project repository from [here](https://github.com/andela-cnwankwo/document-management-system).
+- Clone this repository by running the command on the terminal: `git clone https://github.com/andela-cnwankwo/document-management-system.git`
 - Create a new branch and make your desired contributions
 - Push to github and open a pull request.
+
+## Contributors
+- Ethan Nwankwo

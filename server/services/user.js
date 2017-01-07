@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../../settings/connect');
 const User = require('../../app/models/user')(sequelize, Sequelize);
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt-nodejs');
 
 const secret = 'documentmanagement'; // Specify a secret to sign json web tokens
 
@@ -15,6 +16,7 @@ const secret = 'documentmanagement'; // Specify a secret to sign json web tokens
  */
 module.exports.createUser = (req, res) => {
   const newUser = req.body;
+  const password = bcrypt.hashSync(newUser.password);
   User.findOrCreate({
     where: {
       email: newUser.email
@@ -23,7 +25,7 @@ module.exports.createUser = (req, res) => {
       username: newUser.username,
       name: newUser.name,
       email: newUser.email,
-      password: newUser.password,
+      password,
       roleId: newUser.roleId
     }
   })
@@ -52,13 +54,15 @@ module.exports.login = (req, res) => {
   }
   User.find({
     where: {
-      username: req.query.username,
-      password: req.query.password
+      username: req.query.username
     }
   })
   .then((data) => {
     if (!data) {
       return res.status(404).send({ message: 'User not found' });
+    }
+    if (!bcrypt.compareSync(req.query.password, data.password)) {
+      return res.status(400).send({ message: 'Invalid password' });
     }
     const token = jwt.sign({
       userId: data.id,
