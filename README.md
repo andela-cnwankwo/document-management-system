@@ -130,7 +130,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /documents/find/`limit`/`ownerRoleId`/`date` </td> <td> GET </td> <td> Searches for a number of documents by a given role published on a given date accessible to the current user </td> <td> date format usually Fri Jan 06 2017 </td> <td> All users </td>
 </tr>
 <tr>
-<td> /documents/find/`username` </td> <td> GET </td> <td> Searches for documents by a given user accessible to the current user </td> <td> none</td> <td> All users </td>
+<td> /documents/find/all/`username` </td> <td> GET </td> <td> Searches for documents by a given user accessible to the current user </td> <td> none</td> <td> All users </td>
 </tr>
 </table>
 

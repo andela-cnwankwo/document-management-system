@@ -9,6 +9,7 @@ const secret = process.env.SECRET || 'documentmanagement';
 
 // Call the doc model and specify the arguments.
 const Doc = require('../../app/models/doc')(sequelize, Sequelize);
+const User = require('../../app/models/user')(sequelize, Sequelize);
 
 sequelize.sync({});
 
@@ -49,7 +50,7 @@ module.exports.createDocument = (req, res) => {
 module.exports.getDocument = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
-  Doc.find({
+  Doc.findAll({
     where: {
       id: req.params.id
     },
@@ -80,10 +81,25 @@ module.exports.getDocument = (req, res) => {
 module.exports.getAllDocuments = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
+  let ownerId;
+  let whereCondition = {};
+  if (req.params.username) {
+    User.find({
+      where: {
+        username: req.params.username
+      }
+    }).then((data) => {
+      ownerId = data.id;
+      whereCondition = { ownerId };
+    }
+    );
+  }
   if (token.userRoleId === 1) {
     Doc.findAll({ order: [['published', 'DESC']],
       offset: req.params.offset,
-      limit: req.params.limit })
+      limit: req.params.limit,
+      whereCondition
+    })
         .then(data => res.status(200).send(data));
   } else {
     Doc.findAll({ order: [['published', 'DESC']],
@@ -91,6 +107,7 @@ module.exports.getAllDocuments = (req, res) => {
       offset: req.params.offset,
       where: {
         $or: {
+          ownerId,
           ownerRoleId: token.userRoleId,
           access: 'public',
           $and: {
@@ -100,7 +117,7 @@ module.exports.getAllDocuments = (req, res) => {
         }
       },
       attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
-    }).then((data) => res.status(200).send(data)
+    }).then(data => res.status(200).send(data)
       );
   }
 };
