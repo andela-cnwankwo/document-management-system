@@ -8,8 +8,6 @@ let fakeDocument,
   fakeUser,
   testUser,
   fakeAdmin,
-  testAdmin,
-  testAdminToken,
   fakeUserToken,
   fakeAdminToken,
   testUserToken,
@@ -30,8 +28,6 @@ describe('Document', () => {
       fakeAdmin.roleId = 1;
       fakeRoleDocument = factory.createDocument();
       fakeRoleDocument.access = 'role';
-      testAdmin = factory.createUser();
-      testAdmin.roleId = 1;
       fakePrivateDocument = factory.createDocument();
       fakePrivateDocument.access = 'private';
       request(server).post('/users').send(fakeAdmin)
@@ -40,14 +36,10 @@ describe('Document', () => {
           request(server).post('/users').send(fakeUser)
             .then((res) => {
               fakeUserToken = res.body.userToken;
-              request(server).post('/users').send(testAdmin)
+              request(server).post('/users').send(testUser)
                 .then((res) => {
-                  testAdminToken = res.body.userToken;
-                  request(server).post('/users').send(testUser)
-                    .then((res) => {
-                      testUserToken = res.body.userToken;
-                      done();
-                    });
+                  testUserToken = res.body.userToken;
+                  done();
                 });
             });
         });
