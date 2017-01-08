@@ -1,0 +1,12 @@
+engines:
+  eslint:
+    enabled: true
+    channel: "eslint-3"
+    config:
+      languages:
+        - javascript
+ratings:
+  paths:
+    - "**.js"
+exclude_paths:
+  - test/**
