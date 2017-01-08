@@ -9,7 +9,8 @@ services:
 before_script:
   - psql -c 'drop database if exists travis_ci_test;' -U postgres
   - psql -c 'create database travis_ci_test;' -U postgres
-  - npm run seedtravis
+  - NODE_ENV=travis npm run seed
+  - NODE_ENV=travis npm run migrate-test
 
 script:
   - NODE_ENV=travis npm test

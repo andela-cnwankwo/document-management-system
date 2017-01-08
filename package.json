@@ -8,7 +8,6 @@
     "start": "nodemon settings/app-config.js",
     "migrate": "sequelize db:migrate",
     "seed": "node test/seed/testdata.js",
-    "seedtravis": "NODE_ENV=travis npm run seed && NODE_ENV=travis npm run migrate-test",
     "migrate-test": "node_modules/.bin/sequelize db:migrate"
   },
   "repository": {

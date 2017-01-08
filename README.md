@@ -149,4 +149,4 @@ To contribute to this application;
 - Push to github and open a pull request.
 
 ## Contributors
-- Ethan Nwankwo
+- [Ethan Nwankwo](github.com/andela-cnwankwo)
