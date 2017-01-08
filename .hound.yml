@@ -2,9 +2,5 @@ eslint:
   enabled: true,
   config_file: .eslintrc
 
-jshint:
-  enabled: true,
-  config_file: .jshintrc
-
 esversion:
   6
