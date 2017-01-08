@@ -86,10 +86,12 @@ module.exports.getUser = (req, res) => {
     where: {
       username: req.params.username
     }
-  }).then(data => (data)
-    ? res.status(200).send(data)
-    : res.status(404).send({ message: 'User not Found' })
-    );
+  }).then((data) => {
+    if (data) {
+      return res.status(200).send(data);
+    }
+    return res.status(404).send({ message: 'User not Found' });
+  });
 };
 
 /**
@@ -146,10 +148,12 @@ module.exports.deleteUser = (req, res) => {
       username: req.params.username
     }
   })
-  .then(data => (data === 1)
-    ? res.status(200).send({ message: 'User Removed' })
-    : res.status(404).send({ message: 'User Not found' })
-  );
+  .then((data) => {
+    if (data === 1) {
+      return res.status(200).send({ message: 'User Removed' });
+    }
+    return res.status(404).send({ message: 'User Not found' });
+  });
 };
 
 /**
@@ -159,8 +163,10 @@ module.exports.deleteUser = (req, res) => {
  * @returns {object} specied user.
  */
 module.exports.getAllUsers = (req, res) => {
-  User.findAll({}).then(data => (data)
-    ? res.status(200).send({ data })
-    : res.status(404).send({ message: 'No User Found' })
-  );
+  User.findAll({}).then((data) => {
+    if (data) {
+      return res.status(200).send({ data });
+    }
+    return res.status(404).send({ message: 'No User Found' });
+  });
 };
