@@ -118,10 +118,10 @@ module.exports.updateUser = (req, res) => {
     user.update({
       email: req.body.email,
       name: {
-        first: req.body.firstname,
-        last: req.body.lastname
+        first: req.body.name.first,
+        last: req.body.name.last
       },
-      password: req.body.password,
+      password: bcrypt.hashSync(req.body.password),
       roleId: req.body.roleId
     }).then((updatedUser) => {
       const token = jwt.sign({

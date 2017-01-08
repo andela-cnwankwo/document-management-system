@@ -58,6 +58,17 @@ describe('Document', () => {
           });
     });
 
+    it('should create a document with access set to public by default', (done) => {
+      const publicDocument = factory.createDocument();
+      request(server).post('/documents').send(publicDocument)
+      .set('Authorization', fakeUserToken)
+        .expect(201)
+          .then((res) => {
+            expect(res.body.access).to.equal('public');
+            done();
+          });
+    });
+
     it('should create a document with owner ', (done) => {
       request(server).get(`/documents/${fakeDocument.id}`)
       .set('Authorization', fakeUserToken)
