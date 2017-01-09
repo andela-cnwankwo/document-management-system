@@ -57,9 +57,13 @@ By generating a token on registration and login, API endpoints and documents are
 Requests to protected routes are validated using the generated token.
 
 ## Installation
+Follow the steps below to run the application locally.
+N:B. Ensure all requirements are installed. (see requirements session.)
 - *Steps*:
     - Clone this repository by running the command on the terminal: `git clone https://github.com/andela-cnwankwo/document-management-system.git`
     - Navigate to the project folder and install the packages/modules using: `npm install`
+    - Create a new postgres database (`Requires postgres installed`)
+    - Update the `.env.sample` file with your database information and rename it to `.env`
     - Start the server by running: `npm start`
     - Use an API testing platform ( `e.g. Postman `) to test the endpoints ( `see endpoints below` )
 
@@ -135,8 +139,9 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 </table>
 
 ## Test
+Check requirements above for basic setup before testing. Follow the steps below to test the application.
 - *steps*:
-    - Create a new postgres database
+    - Create a new postgres database (`Requires postgres installed`)
     - Update the `.env.sample` file with your database information and rename it to `.env`
     - Seed data into your new database using the command: `NODE_ENV=test npm run seed`
     - Migrate the database models using the command: `NODE_ENV=test npm run migrate-test`
