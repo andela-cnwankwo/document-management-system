@@ -85,10 +85,10 @@ module.exports.getAllDocuments = (req, res) => {
   const jwtcode = req.headers.authorization;
   const token = jwt.verify(jwtcode, secret);
   let ownerId;
-  if (req.params.username) {
+  if (req.query.username) {
     User.find({
       where: {
-        username: req.params.username
+        username: req.query.username
       }
     }).then((data) => {
       ownerId = data.id;
