@@ -7,12 +7,12 @@ const sequelize = require('../../settings/connect');
 // Call the role model and specify the arguments.
 const Role = require('../../app/models/role')(sequelize, Sequelize);
 
-sequelize.sync({ });
+sequelize.sync({});
 
 /**
  * Create a new role
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {boolean} true if created,false otherwise
  */
 module.exports.createRole = (req, res) => {
@@ -32,7 +32,7 @@ module.exports.createRole = (req, res) => {
 /**
  * Get role
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {object} specified role.
  */
 module.exports.getRole = (req, res) => {
@@ -49,7 +49,7 @@ module.exports.getRole = (req, res) => {
 /**
  * Get all roles
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {object} all roles.
  */
 module.exports.getAllRoles = (req, res) => {

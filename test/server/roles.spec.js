@@ -58,9 +58,7 @@ describe('Roles', () => {
     it('should return all the roles if the user is an admin', (done) => {
       request(server).get('/roles/all')
       .set('Authorization', fakeAdminToken).expect(200)
-        .then(() => {
-          done();
-        });
+        .then(done());
     });
 
     it('should have at least admin and regular roles created', (done) => {

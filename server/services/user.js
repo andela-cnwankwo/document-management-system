@@ -6,12 +6,14 @@ const User = require('../../app/models/user')(sequelize, Sequelize);
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 
-const secret = 'documentmanagement'; // Specify a secret to sign json web tokens
+const secret = process.env.SECRET || 'documentmanagement'; // Specify a secret to sign json web tokens
+
+sequelize.sync({});
 
 /**
  * Create a new user
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createUser = (req, res) => {
@@ -45,7 +47,7 @@ module.exports.createUser = (req, res) => {
 /**
  * User login
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {promise} http response.
  */
 module.exports.login = (req, res) => {
@@ -77,7 +79,7 @@ module.exports.login = (req, res) => {
 /**
  * Get a user data based on the email specified
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {object} specied user.
  */
 module.exports.getUser = (req, res) => {
@@ -97,7 +99,7 @@ module.exports.getUser = (req, res) => {
 /**
  * Get a user data based on the email specified
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {object} specied user.
  */
 module.exports.logout = (req, res) => res.status(200).send({ message: 'Logout Successful' });
@@ -105,7 +107,7 @@ module.exports.logout = (req, res) => res.status(200).send({ message: 'Logout Su
 /**
  * Update user information
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {promise} http response.
  */
 module.exports.updateUser = (req, res) => {
@@ -139,7 +141,7 @@ module.exports.updateUser = (req, res) => {
 /**
  * Delete a user
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {promise} http response.
  */
 module.exports.deleteUser = (req, res) => {
@@ -159,7 +161,7 @@ module.exports.deleteUser = (req, res) => {
 /**
  * Get a user data based on the email specified
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {object} specied user.
  */
 module.exports.getAllUsers = (req, res) => {

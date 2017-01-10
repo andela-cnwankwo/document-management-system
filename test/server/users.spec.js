@@ -94,16 +94,12 @@ describe('Document Management System', () => {
       request(server)
       .post(`/login?username=${fakeUser.username}&password=${fakeUser.password}`)
         .expect(200)
-          .then(() => {
-            done();
-          });
+          .then(done());
     });
 
     it('should logout a user', (done) => {
       request(server).post('/logout').expect(200)
-        .then(() => {
-          done();
-        });
+        .then(done());
     });
 
     it('should return error if no login details is specified', (done) => {
@@ -127,9 +123,7 @@ describe('Document Management System', () => {
         request(server)
           .get('/users').set('Authorization', fakeAdminToken)
             .expect(200)
-              .then(() => {
-                done();
-              });
+              .then(done());
       }
     );
 
@@ -154,9 +148,7 @@ describe('Document Management System', () => {
           roleId: 1
         }).set('Authorization', fakeUserToken)
           .expect(200)
-            .then(() => {
-              done();
-            });
+            .then(done());
     });
 
     it('should return 404 response if user detail is not found', (done) => {
@@ -171,9 +163,7 @@ describe('Document Management System', () => {
           roleId: 1
         }).set('Authorization', fakeUserToken)
           .expect(404)
-            .then(() => {
-              done();
-            });
+            .then(done());
     });
 
     it('should delete a user if requested by admin', (done) => {
@@ -181,9 +171,7 @@ describe('Document Management System', () => {
         .delete(`/users/${fakeAdmin.username}`)
           .set('Authorization', fakeAdminToken)
             .expect(200)
-              .then(() => {
-                done();
-              });
+              .then(done());
     });
 
     it('should return 404 if no user record is found to delete', (done) => {
@@ -191,9 +179,7 @@ describe('Document Management System', () => {
         .delete('/users/delete.invalid_user')
           .set('Authorization', fakeAdminToken)
             .expect(404)
-              .then(() => {
-                done();
-              });
+              .then(done());
     });
   });
 });

@@ -16,7 +16,7 @@ sequelize.sync({});
 /**
  * Create a new document
  * @param {object} req
- * @param {function} res // Callback
+ * @param {function} res // Object
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createDocument = (req, res) => {
@@ -47,7 +47,7 @@ module.exports.createDocument = (req, res) => {
 /**
  * Get created document
  * @param {object} req
- * @param {function} res // Response
+ * @param {function} res // Object
  * @returns {object} specified document.
  */
 module.exports.getDocument = (req, res) => {
@@ -78,7 +78,7 @@ module.exports.getDocument = (req, res) => {
 /**
  * Get created document
  * @param {object} req
- * @param {function} res // Response
+ * @param {function} res // Object
  * @returns {object} specified document.
  */
 module.exports.getAllDocuments = (req, res) => {
@@ -153,7 +153,7 @@ module.exports.getAllDocuments = (req, res) => {
 /**
  * Search documents
  * @param {object} req
- * @param {function} res // Response
+ * @param {function} res // Object
  * @returns {object} all required documents
  */
 module.exports.searchDocuments = (req, res) => {
@@ -163,11 +163,8 @@ module.exports.searchDocuments = (req, res) => {
   if (token.userRoleId === 1) {
     query = { ownerRoleId: req.query.ownerRoleId };
     if (req.query.date) {
-      query = {
-        ownerRoleId: req.query.ownerRoleId,
-        published: {
-          $like: `%${req.query.date}%`
-        }
+      query.published = {
+        $like: `%${req.query.date}%`
       };
     }
   } else {
@@ -186,18 +183,8 @@ module.exports.searchDocuments = (req, res) => {
       }
     };
     if (req.query.date) {
-      query = {
-        $or: {
-          ownerRoleId: token.userRoleId,
-          access: 'public',
-          $and: {
-            access: 'private',
-            ownerId: token.userId
-          }
-        },
-        published: {
-          $like: `%${req.query.date}%`
-        }
+      query.published = {
+        $like: `%${req.query.date}%`
       };
     }
   }

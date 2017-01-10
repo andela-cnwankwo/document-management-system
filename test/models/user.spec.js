@@ -12,7 +12,7 @@ describe('Document Management System', () => {
     });
   });
 
-  it('should create a new role with title', (done) => {
+  it('should create a new user with username, name, email, password, and roleId fields', (done) => {
     expect(fakeUser).to.include.keys(['username', 'name', 'email', 'password', 'roleId']);
     expect(model.User.bulkCreate(fakeUser)).to.be.ok;
     done();
