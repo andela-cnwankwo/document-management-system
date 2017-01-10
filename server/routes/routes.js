@@ -52,28 +52,12 @@ router.route('/documents')
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument);
 
-// Retrieve limited documents
-router.route('/documents/all/:limit')
-  .get(validate.validateToken, documentService.getAllDocuments);
-
-// Retrieve limited documents with offset
-router.route('/documents/all/:offset/:limit')
-  .get(validate.validateToken, documentService.getAllDocuments);
-
-// Search documents by limit alone
-router.route('/documents/find/:limit')
-  .get(validate.validateToken, documentService.getAllDocuments);
-
 // Search documents by username
 router.route('/documents/find/all/:username')
   .get(validate.validateToken, documentService.getAllDocuments);
 
 // Search documents
-router.route('/documents/find/:limit/:ownerRoleId')
-  .get(validate.validateToken, documentService.searchDocuments);
-
-router.route('/documents/find/:limit/:ownerRoleId/:date')
-  .get(validate.validateToken, documentService.searchDocuments);
-
+router.route('/documents/find')
+  .post(validate.validateToken, documentService.searchDocuments);
 
 module.exports = router;

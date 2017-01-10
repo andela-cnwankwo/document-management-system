@@ -175,7 +175,7 @@ describe('Document', () => {
 
     it('Should return documents limited by a number', (done) => {
       const limit = 2;
-      request(server).get(`/documents/all/${limit}`)
+      request(server).get(`/documents?limit=${limit}`)
       .set('Authorization', fakeAdminToken).expect(200)
         .then(() => {
           done();
@@ -185,7 +185,7 @@ describe('Document', () => {
     it('Should return documents limited by a number and a given offset', (done) => {
       const limit = 2;
       const offset = 1;
-      request(server).get(`/documents/all/${offset}/${limit}`)
+      request(server).get(`/documents?offset=${offset}&limit=${limit}`)
       .set('Authorization', fakeAdminToken).expect(200)
         .then(() => {
           done();
@@ -196,7 +196,7 @@ describe('Document', () => {
       it('Should return documents limited by a number given a criteria and created by a specified role', (done) => {
         const limit = 2;
         const roleId = 2;
-        request(server).get(`/documents/find/${limit}/${roleId}`)
+        request(server).get(`/documents?limit=${limit}&ownerRoleId=${roleId}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then(() => {
             done();
@@ -206,7 +206,7 @@ describe('Document', () => {
       it('Should not return documents from the admin role to a regular user', (done) => {
         const limit = 2;
         const roleId = 1;
-        request(server).get(`/documents/find/${limit}/${roleId}`)
+        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
         .set('Authorization', fakeUserToken).expect(401)
           .then((res) => {
             expect(res.body.message).to.equal('Cannot Access document');
@@ -217,7 +217,7 @@ describe('Document', () => {
       it('Should return documents from the admin role to an admin user', (done) => {
         const limit = 2;
         const roleId = 1;
-        request(server).get(`/documents/find/${limit}/${roleId}`)
+        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(() => {
             done();
@@ -225,7 +225,8 @@ describe('Document', () => {
       });
 
       it('Should return documents created on a specified date', (done) => {
-        request(server).get(`/documents/find/1/1/${Date().substr(0, 15)}`)
+        const limit = 1, roleId = 1, date = Date().substr(0, 15);
+        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}&date=${date}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(() => {
             done();
@@ -234,7 +235,7 @@ describe('Document', () => {
 
       it('Should return search results limited by a number ', (done) => {
         const limit = 1;
-        request(server).get(`/documents/find/${limit}`)
+        request(server).post(`/documents/find?limit=${limit}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(() => {
             done();

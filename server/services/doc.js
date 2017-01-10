@@ -98,14 +98,14 @@ module.exports.getAllDocuments = (req, res) => {
             ownerId
           },
           order: [['published', 'DESC']],
-          offset: req.params.offset,
-          limit: req.params.limit
+          offset: req.query.offset,
+          limit: req.query.limit
         })
           .then(data => res.status(200).send(data));
       } else {
         Doc.findAll({ order: [['published', 'DESC']],
-          limit: req.params.limit,
-          offset: req.params.offset,
+          limit: req.query.limit,
+          offset: req.query.offset,
           where: {
             ownerId,
             $or: {
@@ -126,14 +126,14 @@ module.exports.getAllDocuments = (req, res) => {
   } else if (token.userRoleId === 1) {
     Doc.findAll({
       order: [['published', 'DESC']],
-      offset: req.params.offset,
-      limit: req.params.limit
+      offset: req.query.offset,
+      limit: req.query.limit
     })
       .then(data => res.status(200).send(data));
   } else {
     Doc.findAll({ order: [['published', 'DESC']],
-      limit: req.params.limit,
-      offset: req.params.offset,
+      limit: req.query.limit,
+      offset: req.query.offset,
       where: {
         $or: {
           ownerRoleId: token.userRoleId,
@@ -161,18 +161,18 @@ module.exports.searchDocuments = (req, res) => {
   const token = jwt.verify(jwtcode, secret);
   let query;
   if (token.userRoleId === 1) {
-    query = { ownerRoleId: req.params.ownerRoleId };
-    if (req.params.date) {
+    query = { ownerRoleId: req.query.ownerRoleId };
+    if (req.query.date) {
       query = {
-        ownerRoleId: req.params.ownerRoleId,
+        ownerRoleId: req.query.ownerRoleId,
         published: {
-          $like: `%${req.params.date}%`
+          $like: `%${req.query.date}%`
         }
       };
     }
   } else {
     // If the user is trying to search a different role level, return unauthorised;
-    if (parseInt(req.params.ownerRoleId, 10) !== token.userRoleId) {
+    if (parseInt(req.query.ownerRoleId, 10) !== token.userRoleId) {
       return res.status(401).send({ message: 'Cannot Access document' });
     }
     query = {
@@ -185,7 +185,7 @@ module.exports.searchDocuments = (req, res) => {
         }
       }
     };
-    if (req.params.date) {
+    if (req.query.date) {
       query = {
         $or: {
           ownerRoleId: token.userRoleId,
@@ -196,13 +196,13 @@ module.exports.searchDocuments = (req, res) => {
           }
         },
         published: {
-          $like: `%${req.params.date}%`
+          $like: `%${req.query.date}%`
         }
       };
     }
   }
   Doc.findAll({ order: [['published', 'DESC']],
-    limit: req.params.limit,
+    limit: req.query.limit,
     where: query
   })
   .then(data => (data)
