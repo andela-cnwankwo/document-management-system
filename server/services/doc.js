@@ -25,7 +25,10 @@ module.exports.createDocument = (req, res) => {
   const newDocument = req.body;
   Doc.findOrCreate({
     where: {
-      title: newDocument.title
+      title: newDocument.title,
+      published: newDocument.published,
+      ownerId: token.userId,
+      ownerRoleId: token.userRoleId
     },
     defaults: {
       published: newDocument.published,

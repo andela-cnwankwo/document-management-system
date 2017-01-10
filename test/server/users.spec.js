@@ -54,9 +54,9 @@ describe('Document Management System', () => {
 
     it('should return error for login if password is incorrect', (done) => {
       // Default admin account seeded into the database.
-      request(server).get('/login?username=admin&password=wrongpassword').expect(400)
+      request(server).post('/login?username=admin&password=wrongpassword').expect(404)
         .then((res) => {
-          expect(res.body.message).to.equal('Invalid password');
+          expect(res.body.message).to.equal('User not found');
           done();
         });
     });
@@ -92,7 +92,7 @@ describe('Document Management System', () => {
 
     it('should login a registered user', (done) => {
       request(server)
-      .get(`/login?username=${fakeUser.username}&password=${fakeUser.password}`)
+      .post(`/login?username=${fakeUser.username}&password=${fakeUser.password}`)
         .expect(200)
           .then(() => {
             done();
@@ -100,14 +100,14 @@ describe('Document Management System', () => {
     });
 
     it('should logout a user', (done) => {
-      request(server).get('/logout').expect(200)
+      request(server).post('/logout').expect(200)
         .then(() => {
           done();
         });
     });
 
     it('should return error if no login details is specified', (done) => {
-      request(server).get('/login').expect(400)
+      request(server).post('/login').expect(400)
         .then((res) => {
           expect(res.body.message).to.equal('Invalid request, specify username and password');
           done();
@@ -115,7 +115,7 @@ describe('Document Management System', () => {
     });
 
     it('should return not found if user is not registered', (done) => {
-      request(server).get("/login?username=''&password=''").expect(404)
+      request(server).post("/login?username=''&password=''").expect(404)
         .then((res) => {
           expect(res.body.message).to.equal('User not found');
           done();

@@ -26,10 +26,10 @@ router.route('/users/:username')
 
 // User login route
 router.route('/login')
-  .get(userService.login);
+  .post(userService.login);
 
 router.route('/logout')
-  .get(userService.logout);
+  .post(userService.logout);
 
 // Route to create roles
 router.route('/roles')

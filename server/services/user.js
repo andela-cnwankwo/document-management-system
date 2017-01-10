@@ -62,7 +62,7 @@ module.exports.login = (req, res) => {
       return res.status(404).send({ message: 'User not found' });
     }
     if (!bcrypt.compareSync(req.query.password, data.password)) {
-      return res.status(400).send({ message: 'Invalid password' });
+      return res.status(404).send({ message: 'User not found' });
     }
     const token = jwt.sign({
       userId: data.id,

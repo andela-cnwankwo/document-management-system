@@ -241,9 +241,17 @@ describe('Document', () => {
           });
       });
 
-      it('Should return all documents of a specified if requested ', (done) => {
+      it('Should return all documents of a specified user if requested by admin', (done) => {
         request(server).get(`/documents/find/all/${fakeUser.username}`)
         .set('Authorization', fakeAdminToken).expect(200)
+          .then(() => {
+            done();
+          });
+      });
+
+      it('Should return all documents of a specified user accessible to the user ', (done) => {
+        request(server).get(`/documents/find/all/${fakeUser.username}`)
+        .set('Authorization', fakeUserToken).expect(200)
           .then(() => {
             done();
           });
