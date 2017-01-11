@@ -105,7 +105,7 @@ module.exports.getAllDocuments = (req, res) => {
           offset: req.query.offset,
           limit: req.query.limit
         })
-          .then(data => res.status(200).send(data));
+          .then(response => res.status(200).send(response));
       } else {
         Doc.findAll({ order: [['published', 'DESC']],
           limit: req.query.limit,
@@ -130,7 +130,7 @@ module.exports.getAllDocuments = (req, res) => {
             'ownerId',
             'ownerRoleId'
           ]
-        }).then(data => res.status(200).send(data)
+        }).then(response => res.status(200).send(response)
         );
       }
     }

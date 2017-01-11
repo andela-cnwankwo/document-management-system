@@ -56,7 +56,7 @@ module.exports.createUser = (req, res) => {
  */
 module.exports.login = (req, res) => {
   if (!req.query.username || !req.query.password) {
-    return res.status(400).send({ 
+    return res.status(400).send({
       message: 'Invalid request, specify username and password'
     });
   }
@@ -144,7 +144,7 @@ module.exports.updateUser = (req, res) => {
         userName: updatedUser.username,
         userRoleId: updatedUser.roleId
       }, secret, { expiresIn: '1 day' });
-      return res.status(200).send({ 
+      return res.status(200).send({
         userToken: token,
         message: 'Update Successful! Token expires in a day.'
       });
