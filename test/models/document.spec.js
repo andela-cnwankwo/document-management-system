@@ -7,9 +7,7 @@ let fakeDocument;
 describe('Document Management System', () => {
   // Before running tests, synchronize the tables
   before((done) => {
-    sequelize.sync({ }).then(() => {
-      done();
-    });
+    sequelize.sync({}).then(done())
   });
 
   beforeEach((done) => {
