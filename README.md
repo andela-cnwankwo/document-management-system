@@ -119,22 +119,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /documents/`id` </td> <td> GET </td> <td> Shows a document accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> /documents/all/`limit` </td> <td> GET </td> <td> Shows a specified number documents accessible to the current user </td> <td> none </td> <td> All users </td>
-</tr>
-<tr>
-<td> /documents/all/`offset`/`limit` </td> <td> GET </td> <td> Shows a specified number documents skipping the specified offset (i.e. 2) accessible to the current user </td> <td> none </td> <td> All users </td>
-</tr>
-<tr>
-<td> /documents/find/`limit` </td> <td> GET </td> <td> Searches for a specified number documents accessible to the current user </td> <td> none </td> <td> All users </td>
-</tr>
-<tr>
-<td> /documents/find/`limit`/`ownerRoleId` </td> <td> GET </td> <td> Searches for number of documents by a given role accessible to the current user </td> <td> none </td> <td> All users </td>
-</tr>
-<tr>
-<td> /documents/find/`limit`/`ownerRoleId`/`date` </td> <td> GET </td> <td> Searches for a number of documents by a given role published on a given date accessible to the current user </td> <td> date format usually Fri Jan 06 2017 </td> <td> All users </td>
-</tr>
-<tr>
-<td> /documents/find/all/`username` </td> <td> GET </td> <td> Searches for documents by a given user accessible to the current user </td> <td> none</td> <td> All users </td>
+<td> /documents/find </td> <td> GET </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 </table>
 

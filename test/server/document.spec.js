@@ -21,14 +21,8 @@ describe('Document', () => {
   // Create a default user and a default admin
   before((done) => {
     sequelize.sync({ force: true }).then(() => {
-      // fakeDocument = factory.createDocument();
-      // fakeUser = factory.createUser();
-      // testUser = factory.createUser();
-      // fakeAdmin = factory.createUser();
       fakeAdmin.roleId = 1;
-      // fakeRoleDocument = factory.createDocument();
       fakeRoleDocument.access = 'role';
-      // fakePrivateDocument = factory.createDocument();
       fakePrivateDocument.access = 'private';
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {

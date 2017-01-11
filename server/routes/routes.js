@@ -52,10 +52,6 @@ router.route('/documents')
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument);
 
-// // Search documents by username
-// router.route('/documents/find/all/:username')
-//   .get(validate.validateToken, documentService.getAllDocuments);
-
 // Search documents
 router.route('/documents/find')
   .post(validate.validateToken, documentService.searchDocuments);
