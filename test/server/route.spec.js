@@ -10,10 +10,12 @@ describe('Routes', () => {
     server.close(done);
   });
   describe('Default route', () => {
-    it('Should return a 200 status when the default route is called', (done) => {
+    it('Should return a 200 status when the default route is called',
+    (done) => {
       request(server).get('/').expect(200)
       .then((res) => {
-        expect(res.body.message).to.equal('Welcome to the Document Management App!');
+        expect(res.body.message)
+          .to.equal('Welcome to the Document Management App!');
         done();
       });
     });

@@ -16,8 +16,8 @@ describe('Roles', () => {
       request(server).get('/users/myusername')
       .set('Authorization', 'Authorization').expect(401)
         .then((res) => {
-          expect(res.body.message).to.equal('Invalid Token, User unauthorised!');
-          done();
+        expect(res.body.message).to.equal('Invalid Token, User unauthorised!');
+        done();
         });
     });
 
@@ -33,8 +33,8 @@ describe('Roles', () => {
       request(server).get('/users')
       .set('Authorization', 'Authorization').expect(401)
         .then((res) => {
-          expect(res.body.message).to.equal('Invalid Token, User unauthorised!');
-          done();
+        expect(res.body.message).to.equal('Invalid Token, User unauthorised!');
+        done();
         });
     });
   });

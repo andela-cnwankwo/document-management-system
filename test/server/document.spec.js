@@ -52,7 +52,8 @@ describe('Document', () => {
           });
     });
 
-    it('should create a document with access set to public by default', (done) => {
+    it('should create a document with access set to public by default', 
+    (done) => {
       const publicDocument = factory.createDocument();
       request(server).post('/documents').send(publicDocument)
       .set('Authorization', fakeUserToken)
@@ -83,8 +84,8 @@ describe('Document', () => {
               .set('Authorization', fakeUserToken)
                 .expect(409)
                   .then((res) => {
-                    expect(res.body.message).to.equal('Document already exist');
-                    done();
+                  expect(res.body.message).to.equal('Document already exist');
+                  done();
                   });
           });
     });
@@ -116,13 +117,15 @@ describe('Document', () => {
         .then(done());
     });
 
-    it('should retrieve all documents a user can access if not admin', (done) => {
+    it('should retrieve all documents a user can access if not admin', 
+    (done) => {
       request(server).get('/documents')
       .set('Authorization', fakeUserToken).expect(200)
         .then(done());
     });
 
-    it('should not return private documents if requested by another user', (done) => {
+    it('should not return private documents if requested by another user',
+    (done) => {
       request(server).get(`/documents/${fakePrivateDocumentId}`)
       .set('Authorization', testUserToken).expect(401)
         .then((response) => {
@@ -162,7 +165,8 @@ describe('Document', () => {
         .then(done());
     });
 
-    it('Should return documents limited by a number and a given offset', (done) => {
+    it('Should return documents limited by a number and a given offset', 
+    (done) => {
       const limit = 2;
       const offset = 1;
       request(server).get(`/documents?offset=${offset}&limit=${limit}`)
@@ -171,7 +175,8 @@ describe('Document', () => {
     });
 
     describe('Search Documents', () => {
-      it('Should return documents limited by a number given a criteria and created by a specified role', (done) => {
+      it('Should return documents given a criteria and created by a role',
+      (done) => {
         const limit = 2;
         const roleId = 2;
         request(server).get(`/documents?limit=${limit}&ownerRoleId=${roleId}`)
@@ -179,10 +184,12 @@ describe('Document', () => {
           .then(done());
       });
 
-      it('Should not return documents from the admin role to a regular user', (done) => {
+      it('Should not return documents from the admin role to a regular user', 
+      (done) => {
         const limit = 2;
         const roleId = 1;
-        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
+        request(server)
+        .post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
         .set('Authorization', fakeUserToken).expect(401)
           .then((res) => {
             expect(res.body.message).to.equal('Cannot Access document');
@@ -190,17 +197,20 @@ describe('Document', () => {
           });
       });
 
-      it('Should return documents from the admin role to an admin user', (done) => {
+      it('Should return documents from the admin role to an admin user',
+      (done) => {
         const limit = 2;
         const roleId = 1;
-        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
+        request(server)
+        .post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(done());
       });
 
       it('Should return documents created on a specified date', (done) => {
         const limit = 1, roleId = 1, date = Date().substr(0, 15);
-        request(server).post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}&date=${date}`)
+        request(server)
+        .post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}&date=${date}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(done());
       });
@@ -212,13 +222,15 @@ describe('Document', () => {
           .then(done());
       });
 
-      it('Should return all documents of a specified user if requested by admin', (done) => {
+      it('Should return all documents of specified user if requested by admin',
+      (done) => {
         request(server).get(`/documents?username=${fakeUser.username}`)
         .set('Authorization', fakeAdminToken).expect(200)
           .then(done());
       });
 
-      it('Should return all documents of a specified user accessible to the user ', (done) => {
+      it('Should return all documents of specified user accessible to the user',
+      (done) => {
         request(server).get(`/documents?username=${fakeUser.username}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then(done());

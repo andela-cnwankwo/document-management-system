@@ -54,7 +54,8 @@ describe('Document Management System', () => {
 
     it('should return error for login if password is incorrect', (done) => {
       // Default admin account seeded into the database.
-      request(server).post('/login?username=admin&password=wrongpassword').expect(404)
+      request(server).post('/login?username=admin&password=wrongpassword')
+      .expect(404)
         .then((res) => {
           expect(res.body.message).to.equal('User not found');
           done();
@@ -105,7 +106,8 @@ describe('Document Management System', () => {
     it('should return error if no login details is specified', (done) => {
       request(server).post('/login').expect(400)
         .then((res) => {
-          expect(res.body.message).to.equal('Invalid request, specify username and password');
+          expect(res.body.message)
+            .to.equal('Invalid request, specify username and password');
           done();
         });
     });
@@ -131,8 +133,8 @@ describe('Document Management System', () => {
       request(server)
         .get('/users').set('Authorization', fakeUserToken).expect(401)
         .then((res) => {
-          expect(res.body.message).to.equal('User unauthorised! login as admin');
-          done();
+        expect(res.body.message).to.equal('User unauthorised! login as admin');
+        done();
         });
     });
 

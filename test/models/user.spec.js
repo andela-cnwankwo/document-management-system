@@ -10,8 +10,11 @@ describe('Document Management System', () => {
     sequelize.sync({}).then(done())
   });
 
-  it('should create a new user with username, name, email, password, and roleId fields', (done) => {
-    expect(fakeUser).to.include.keys(['username', 'name', 'email', 'password', 'roleId']);
+  it('should create user with username, name, email, password, and roleId',
+   (done) => {
+    expect(fakeUser).to.include.keys([
+      'username', 'name', 'email', 'password', 'roleId'
+      ]);
     expect(model.User.bulkCreate(fakeUser)).to.be.ok;
     done();
   });

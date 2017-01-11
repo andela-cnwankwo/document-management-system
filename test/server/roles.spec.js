@@ -50,7 +50,8 @@ describe('Roles', () => {
           .set('Authorization', fakeUserToken)
           .expect(401)
             .then((res) => {
-              expect(res.body.message).to.equal('User unauthorised! login as admin');
+              expect(res.body.message)
+                .to.equal('User unauthorised! login as admin');
               done();
             });
     });

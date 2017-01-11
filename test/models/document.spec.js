@@ -16,7 +16,9 @@ describe('Document Management System', () => {
   });
 
   it('should create a new document with ownerId', (done) => {
-    expect(fakeDocument).to.include.keys(['published', 'title', 'access', 'ownerId', 'ownerRoleId']);
+    expect(fakeDocument).to.include.keys([
+      'published', 'title', 'access', 'ownerId', 'ownerRoleId'
+      ]);
     expect(model.Doc.bulkCreate(fakeDocument)).to.be.ok;
     done();
   });

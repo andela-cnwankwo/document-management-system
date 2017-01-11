@@ -57,7 +57,9 @@ module.exports.getDocument = (req, res) => {
     where: {
       id: req.params.id
     },
-    attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
+    attributes: [
+      'id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId'
+    ]
   }).then((data) => {
     if (!data) {
       return res.status(404).send({ message: 'Document not found' });
@@ -68,7 +70,9 @@ module.exports.getDocument = (req, res) => {
     if (data.ownerId === token.userId) {
       return res.status(200).send(data);
     }
-    if (data && token.userRoleId === data.dataValues.ownerRoleId && data.access === 'role') {
+    if (data
+    && token.userRoleId === data.dataValues.ownerRoleId
+    && data.access === 'role') {
       return res.status(200).send(data);
     }
     return res.status(401).send({ message: 'Cannot Access document' });
@@ -117,7 +121,15 @@ module.exports.getAllDocuments = (req, res) => {
               }
             }
           },
-          attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
+          attributes: [
+            'id',
+            'published',
+            'title',
+            'access',
+            'content',
+            'ownerId',
+            'ownerRoleId'
+          ]
         }).then(data => res.status(200).send(data)
         );
       }
@@ -144,7 +156,15 @@ module.exports.getAllDocuments = (req, res) => {
           }
         }
       },
-      attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
+      attributes: [
+        'id',
+        'published',
+        'title',
+        'access',
+        'content',
+        'ownerId',
+        'ownerRoleId'
+      ]
     }).then(data => res.status(200).send(data)
     );
   }
@@ -168,7 +188,7 @@ module.exports.searchDocuments = (req, res) => {
       };
     }
   } else {
-    // If the user is trying to search a different role level, return unauthorised;
+    // return authorized If user is trying to search a different role;
     if (parseInt(req.query.ownerRoleId, 10) !== token.userRoleId) {
       return res.status(401).send({ message: 'Cannot Access document' });
     }

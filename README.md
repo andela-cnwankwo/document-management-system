@@ -119,7 +119,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /documents/`id` </td> <td> GET </td> <td> Shows a document accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> /documents/find </td> <td> GET </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
+<td> /documents/find </td> <td> POST </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 </table>
 
