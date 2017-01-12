@@ -107,7 +107,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /roles/all </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
-<td> /roles/`title` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
+<td> /roles/`id` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
 <td> /documents </td> <td> POST </td> <td> Create a new document </td> <td> title, content, access, ownerId, ownerRoleId </td> <td> All users </td>

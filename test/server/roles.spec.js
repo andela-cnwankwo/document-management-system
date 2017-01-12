@@ -63,10 +63,10 @@ describe('Roles', () => {
     });
 
     it('should have at least admin and regular roles created', (done) => {
-      request(server).get('/roles/admin')
+      request(server).get('/roles/1')
       .set('Authorization', fakeAdminToken).expect(200)
         .then(() => {
-          request(server).get('/roles/regular')
+          request(server).get('/roles/2')
           .set('Authorization', fakeAdminToken).expect(200)
             .then(() => {
               done();

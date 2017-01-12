@@ -38,7 +38,7 @@ module.exports.createRole = (req, res) => {
 module.exports.getRole = (req, res) => {
   Role.find({
     where: {
-      title: req.params.title
+      id: req.params.id
     }
   }).then((role) => (role)
     ? res.status(200).send(role)
