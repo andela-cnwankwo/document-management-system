@@ -176,7 +176,7 @@ module.exports.deleteUser = (req, res) => {
  * Get a user data based on the email specified
  * @param {object} req
  * @param {function} res // Object
- * @returns {object} specied user.
+ * @returns {object} specied user object.
  */
 module.exports.getAllUsers = (req, res) => {
   User.findAll({}).then((data) => {

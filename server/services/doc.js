@@ -39,9 +39,12 @@ module.exports.createDocument = (req, res) => {
       ownerRoleId: token.userRoleId
     }
   })
-    .spread((doc, created) => (created)
-        ? res.status(201).send(doc)
-        : res.status(409).send({ message: 'Document already exist' }));
+    .spread((doc, created) => {
+      if (!created) {
+        return res.status(409).send({ message: 'Document already exist' });
+      }
+      return res.status(201).send(doc);
+    });
 };
 
 /**
@@ -212,7 +215,10 @@ module.exports.searchDocuments = (req, res) => {
     limit: req.query.limit,
     where: query
   })
-  .then(data => (data)
-    ? res.status(200).send(data)
-    : res.status(404).send({ message: 'No Result Found' }));
+  .then((data) => {
+    if (!data) {
+      return res.status(404).send({ message: 'No Result Found' });
+    }
+    return res.status(200).send(data);
+  });
 };

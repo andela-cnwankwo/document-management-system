@@ -24,9 +24,12 @@ module.exports.createRole = (req, res) => {
       title: req.body.title
     }
   })
-  .spread((role, created) => (created)
-    ? res.status(201).send({ message: 'Role Added!' })
-    : res.status(400).send({ message: 'Role Already Exists!' }));
+  .spread((role, created) => {
+    if (!created) {
+      return res.status(400).send({ message: 'Role Already Exists!' });
+    }
+    return res.status(201).send({ message: 'Role Added!' });
+  });
 };
 
 /**
@@ -40,9 +43,12 @@ module.exports.getRole = (req, res) => {
     where: {
       id: req.params.id
     }
-  }).then((role) => (role)
-    ? res.status(200).send(role)
-    : res.status(404).send({ message: 'Role Not found' })
+  }).then((role) => {
+    if (!role) {
+      return res.status(404).send({ message: 'Role Not found' });
+    }
+    return res.status(200).send(role);
+  }
   );
 };
 
@@ -53,8 +59,11 @@ module.exports.getRole = (req, res) => {
  * @returns {object} all roles.
  */
 module.exports.getAllRoles = (req, res) => {
-  Role.findAll().then((roles) => (roles)
-    ? res.status(200).send(roles)
-    : res.status(404).send({ message: 'No role found' })
+  Role.findAll().then((roles) => {
+    if (!roles) {
+      return res.status(404).send({ message: 'No role found' });
+    }
+    return res.status(200).send(roles);
+  }
   );
 };

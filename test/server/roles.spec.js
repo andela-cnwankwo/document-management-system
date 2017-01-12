@@ -86,7 +86,7 @@ describe('Roles', () => {
     });
 
     it('should return not found if role does not exist', (done) => {
-      request(server).get('/roles/an.invalid.role')
+      request(server).get('/roles/1000000')
       .set('Authorization', fakeAdminToken).expect(404)
         .then((res) => {
           expect(res.body.message).to.equal('Role Not found');
