@@ -74,6 +74,7 @@ This application requires NodeJS, NPM package manager and PostgreSQL installed.
 Operations are carried out on the application by making API calls (`POST, GET, PUT, DELETE`) to the endpoints shown below.
 
 ### Endpoints:
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/9f5b3c92a3e5d61f570b)
 
 <table> 
 <tr>
