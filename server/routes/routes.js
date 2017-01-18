@@ -41,7 +41,9 @@ router.route('/roles/all')
 
 // Retrieve a single role
 router.route('/roles/:id')
-  .get(validate.validateAdmin, roleService.getRole);
+  .get(validate.validateAdmin, roleService.getRole)
+  .put(validate.validateAdmin, roleService.updateRole)
+  .delete(validate.validateAdmin, roleService.deleteRole);
 
 // Route for documents
 router.route('/documents')

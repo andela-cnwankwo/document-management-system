@@ -28,7 +28,51 @@ module.exports.createRole = (req, res) => {
     if (!created) {
       return res.status(400).send({ message: 'Role Already Exists!' });
     }
-    return res.status(201).send({ message: 'Role Added!' });
+    return res.status(201).send({ role, message: 'Role Added!' });
+  });
+};
+
+
+/**
+ * Update role
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {promise} http response.
+ */
+module.exports.updateRole = (req, res) => {
+  Role.find({
+    where: {
+      id: req.params.id
+    }
+  }).then((role) => {
+    if (!role) {
+      return res.status(404).send({ message: 'Role not found' });
+    }
+    role.update({
+      title: req.body.title
+    }).then(() => {
+      res.status(200).send({ message: 'Role Updated!' });
+    });
+  });
+};
+
+/**
+ * Delete a role
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {promise} http response.
+ */
+module.exports.deleteRole = (req, res) => {
+  Role.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then((data) => {
+    if (data === 1) {
+      return res.status(200).send({ message: 'Role Removed!' });
+    }
+    return res.status(404).send({ message: 'Role Not Found' });
   });
 };
 

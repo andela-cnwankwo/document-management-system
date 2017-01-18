@@ -133,8 +133,8 @@ module.exports.updateUser = (req, res) => {
     user.update({
       email: req.body.email,
       name: {
-        first: req.body.name.first,
-        last: req.body.name.last
+        first: req.body.firstname,
+        last: req.body.lastname
       },
       password: bcrypt.hashSync(req.body.password),
       roleId: req.body.roleId
