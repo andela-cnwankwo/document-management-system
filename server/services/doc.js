@@ -3,9 +3,6 @@
 const Sequelize = require('sequelize');
 // Require sequelize from the connection settings
 const sequelize = require('../../settings/connect');
-const jwt = require('jsonwebtoken');
-
-const secret = process.env.SECRET || 'documentmanagement';
 
 // Call the doc model and specify the arguments.
 const Doc = require('../../app/models/doc')(sequelize, Sequelize);
@@ -20,8 +17,7 @@ sequelize.sync({});
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createDocument = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   const newDocument = req.body;
   Doc.findOrCreate({
     where: {
@@ -54,8 +50,7 @@ module.exports.createDocument = (req, res) => {
  * @returns {object} specified document.
  */
 module.exports.getDocument = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   Doc.find({
     where: {
       id: req.params.id
@@ -90,8 +85,7 @@ module.exports.getDocument = (req, res) => {
  */
 module.exports.updateDocument = (req, res) => {
   // @TODO: Check request body to ensure data compliance.
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   Doc.find({
     where: {
       id: req.params.id
@@ -121,8 +115,7 @@ module.exports.updateDocument = (req, res) => {
  * @returns {object} specified document.
  */
 module.exports.getAllDocuments = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   let ownerId;
   if (req.query.username) {
     User.find({
@@ -212,8 +205,7 @@ module.exports.getAllDocuments = (req, res) => {
  * @returns {object} all required documents
  */
 module.exports.searchDocuments = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   let query;
   if (token.userRoleId === 1) {
     query = { ownerRoleId: req.query.ownerRoleId };

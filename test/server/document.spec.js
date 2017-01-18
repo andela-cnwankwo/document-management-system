@@ -64,7 +64,7 @@ describe('Document', () => {
           });
     });
 
-    it('should create a document with owner ', (done) => {
+    it('should create a document with ownerId ', (done) => {
       request(server).get(`/documents/${fakeDocument.id}`)
       .set('Authorization', fakeUserToken)
         .expect(200)

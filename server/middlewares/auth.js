@@ -17,11 +17,12 @@ const validation = {
       return res.status(401).send({ message: 'User unauthorised!' });
     }
     const jwtcode = req.headers.authorization;
-    jwt.verify(jwtcode, secret, (err) => {
+    jwt.verify(jwtcode, secret, (err, token) => {
       if (err) {
         return res.status(401)
           .send({ message: 'Invalid Token, User unauthorised!' });
       }
+      req.token = token;
       done();
     }
     );
@@ -48,6 +49,7 @@ const validation = {
         return res.status(401)
           .send({ message: 'User unauthorised! login as admin' });
       }
+      req.token = token;
       done();
     }
     );
