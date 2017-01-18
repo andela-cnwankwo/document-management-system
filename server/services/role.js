@@ -46,7 +46,7 @@ module.exports.updateRole = (req, res) => {
     }
   }).then((role) => {
     if (!role) {
-      return res.status(404).send({ message: 'Role not found' });
+      return res.status(404).send({ message: 'Role Not Found' });
     }
     role.update({
       title: req.body.title

@@ -152,10 +152,33 @@ describe('Roles', () => {
               request(server).delete(`/roles/${res.body.role.id}`)
               .set('Authorization', fakeUserToken).expect(401)
                 .then((res) => {
-                  expect(res.body.message).to.equal('User unauthorised! login as admin');
+                  expect(res.body.message)
+                    .to.equal('User unauthorised! login as admin');
                   done();
                 });
             });
+    });
+
+    it('should return 404 if admin tries to update a role that does not exist',
+      (done) => {
+        request(server).put('/roles/100010')
+        .set('Authorization', fakeAdminToken).expect(404)
+          .then((res) => {
+            expect(res.body.message)
+              .to.equal('Role Not Found');
+            done();
+          });
+    });
+
+    it('should return 404 if admin tries to delete a role that does not exist',
+      (done) => {
+        request(server).delete('/roles/100010')
+        .set('Authorization', fakeAdminToken).expect(404)
+          .then((res) => {
+            expect(res.body.message)
+              .to.equal('Role Not Found');
+            done();
+          });
     });
   });
 });
