@@ -52,7 +52,8 @@ router.route('/documents')
 
 // Retrieve a single document
 router.route('/documents/:id')
-  .get(validate.validateToken, documentService.getDocument);
+  .get(validate.validateToken, documentService.getDocument)
+  .put(validate.validateToken, documentService.updateDocument);
 
 // Search documents
 router.route('/documents/find')

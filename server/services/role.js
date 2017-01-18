@@ -40,6 +40,7 @@ module.exports.createRole = (req, res) => {
  * @returns {promise} http response.
  */
 module.exports.updateRole = (req, res) => {
+  // @TODO: Check request body to ensure data compliance.
   Role.find({
     where: {
       id: req.params.id

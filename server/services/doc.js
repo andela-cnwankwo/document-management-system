@@ -83,6 +83,38 @@ module.exports.getDocument = (req, res) => {
 };
 
 /**
+ * Update created document
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {object} specified document.
+ */
+module.exports.updateDocument = (req, res) => {
+  // @TODO: Check request body to ensure data compliance.
+  const jwtcode = req.headers.authorization;
+  const token = jwt.verify(jwtcode, secret);
+  Doc.find({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId'
+    ]
+  }).then((doc) => {
+    if (!doc) {
+      return res.status(404).send({ message: 'Document not found' });
+    }
+    if ((token.userId !== doc.ownerId) && (token.userRoleId !== 1)) {
+      return res.status(401).send({ message: 'Cannot Access document' });
+    }
+    doc.update({
+      title: req.body.title,
+      access: req.body.access,
+      content: req.body.content
+    }).then(() => res.status(200).send({ message: 'Document Updated!' }));
+  });
+};
+
+/**
  * Get created document
  * @param {object} req
  * @param {function} res // Object

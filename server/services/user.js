@@ -122,6 +122,7 @@ module.exports.logout = (req, res) => res.status(200).send({
  * @returns {promise} http response.
  */
 module.exports.updateUser = (req, res) => {
+  // @TODO: Check request body to ensure data compliance.
   User.find({
     where: {
       username: req.params.username

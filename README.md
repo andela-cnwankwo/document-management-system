@@ -111,6 +111,12 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /roles/`id` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
+<td> /roles/`id` </td> <td> PUT </td> <td> Update a particular role </td> <td> title </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles/`id` </td> <td> DELETE </td> <td> Delete a particular role </td> <td> none </td> <td> admin </td>
+</tr>
+<tr>
 <td> /documents </td> <td> POST </td> <td> Create a new document </td> <td> title, content, access, ownerId, ownerRoleId </td> <td> All users </td>
 </tr>
 <tr>
