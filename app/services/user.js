@@ -52,22 +52,22 @@ module.exports.createUser = (req, res) => {
  * @returns {promise} http response.
  */
 module.exports.login = (req, res) => {
-  if (!req.query.username || !req.query.password) {
+  if (!req.body.username || !req.body.password) {
     return res.status(400).send({
       message: 'Invalid request, specify username and password'
     });
   }
   User.find({
     where: {
-      username: req.query.username
+      username: req.body.username
     }
   })
   .then((data) => {
     if (!data) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'Invalid username or password' });
     }
-    if (!bcrypt.compareSync(req.query.password, data.password)) {
-      return res.status(404).send({ message: 'User not found' });
+    if (!bcrypt.compareSync(req.body.password, data.password)) {
+      return res.status(404).send({ message: 'Invalid username or password' });
     }
     const token = jwt.sign({
       userId: data.id,

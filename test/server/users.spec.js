@@ -115,7 +115,7 @@ describe('Document Management System', () => {
     it('should return not found if user is not registered', (done) => {
       request(server).post("/login?username=''&password=''").expect(404)
         .then((res) => {
-          expect(res.body.message).to.equal('User not found');
+          expect(res.body.message).to.equal('Invalid username or password');
           done();
         });
     });
