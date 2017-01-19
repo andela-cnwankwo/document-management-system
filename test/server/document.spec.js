@@ -310,6 +310,18 @@ describe('Document', () => {
         .set('Authorization', fakeUserToken).expect(200)
           .then(done());
       });
+
+      it('Should delete a document if requested by the owner', (done) => {
+        const fakeDeleteDocument = factory.createDocument();
+        request(server).post('/documents').send(fakeDeleteDocument)
+        .set('Authorization', fakeUserToken)
+          .expect(201)
+            .then((res) => {
+              request(server).delete(`/documents/${res.body.id}`)
+              .set('Authorization', fakeUserToken).expect(200)
+                .then(done());
+            });  
+      });
     });
   });
 });

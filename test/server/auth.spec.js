@@ -2,8 +2,8 @@ const expect = require('chai').expect;
 const request = require('supertest');
 const server = require('../../settings/app-config');
 
-describe('Roles', () => {
-  describe('Role', () => {
+describe('Authentication', () => {
+  describe('User token', () => {
     it('should return unauthorised if no user token is specified', (done) => {
       request(server).get('/users/myusername').expect(401)
         .then((res) => {
