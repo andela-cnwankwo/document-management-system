@@ -88,7 +88,7 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /users </td> <td> GET </td> <td> show all registered users </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
-<td> /login </td> <td> POST </td> <td> login a registered user </td> <td> username and password as request parameters. </td> <td> none </td>
+<td> /login </td> <td> POST </td> <td> login a registered user </td> <td> username and password as request body. </td> <td> none </td>
 </tr>
 <tr>
 <td> /logout </td> <td> POST </td> <td> logout a user </td> <td> none </td> <td> none </td>
