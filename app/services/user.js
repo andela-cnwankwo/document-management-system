@@ -92,7 +92,7 @@ module.exports.getUser = (req, res) => {
   // @TODO: get user details only when it is the currently looged in user
   User.find({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   }).then((data) => {
     if (data) {
