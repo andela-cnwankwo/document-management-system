@@ -1,7 +1,7 @@
 const express = require('express');
-const userService = require('../../server/services/user');
-const roleService = require('../../server/services/role');
-const documentService = require('../../server/services/doc');
+const userService = require('../../app/services/user');
+const roleService = require('../../app/services/role');
+const documentService = require('../../app/services/doc');
 const validate = require('../middlewares/auth');
 
 const router = express.Router();

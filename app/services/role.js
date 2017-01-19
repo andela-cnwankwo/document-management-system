@@ -1,13 +1,8 @@
 //  Defines various services for the role object
 
-const Sequelize = require('sequelize');
-// Require sequelize from the connection settings
-const sequelize = require('../../settings/connect');
+const db = require('../models');
 
-// Call the role model and specify the arguments.
-const Role = require('../../app/models/role')(sequelize, Sequelize);
-
-sequelize.sync({});
+const Role = db.Role;
 
 /**
  * Create a new role

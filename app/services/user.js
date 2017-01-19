@@ -1,14 +1,11 @@
 //  Defines various services for the user object
 
-const Sequelize = require('sequelize');
-const sequelize = require('../../settings/connect');
-const User = require('../../app/models/user')(sequelize, Sequelize);
+const db = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 
+const User = db.User;
 const secret = process.env.SECRET || 'documentmanagement'; // Specify a secret to sign json web tokens
-
-sequelize.sync({});
 
 /**
  * Create a new user

@@ -1,14 +1,8 @@
 //  Defines various services for the role object
 
-const Sequelize = require('sequelize');
-// Require sequelize from the connection settings
-const sequelize = require('../../settings/connect');
+const db = require('../models');
 
-// Call the doc model and specify the arguments.
-const Doc = require('../../app/models/doc')(sequelize, Sequelize);
-const User = require('../../app/models/user')(sequelize, Sequelize);
-
-sequelize.sync({});
+const Doc = db.Doc, User = db.User;
 
 /**
  * Create a new document
