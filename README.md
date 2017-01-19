@@ -126,6 +126,12 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /documents/`id` </td> <td> GET </td> <td> Shows a document accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
+<td> /documents/`id` </td> <td> PUT </td> <td> Update a document accessible to the current user </td> <td> title, access, content </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/`id` </td> <td> DELETE </td> <td> Delete a document created by the current user </td> <td> none </td> <td> Current user and admin </td>
+</tr>
+<tr>
 <td> /documents/find </td> <td> POST </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 </table>
