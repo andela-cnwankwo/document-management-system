@@ -10,6 +10,8 @@ let fakeDocument = factory.createDocument(),
   fakeAdmin = factory.createUser(),
   fakeRoleDocument = factory.createDocument(),
   fakePrivateDocument = factory.createDocument(),
+  newDocument = factory.createDocument(),
+  newDocumentId,
   fakeUserToken,
   fakeAdminToken,
   testUserToken,
@@ -33,7 +35,12 @@ describe('Document', () => {
               request(server).post('/users').send(testUser)
                 .then((res) => {
                   testUserToken = res.body.userToken;
-                  done();
+                  request(server).post('/documents').send(newDocument)
+                    .set('Authorization', fakeUserToken)
+                      .then((res) => {
+                        newDocumentId = res.body.id;
+                        done();
+                      });
                 });
             });
         });
@@ -55,74 +62,52 @@ describe('Document', () => {
     it('should create a document with access set to public by default', 
     (done) => {
       const publicDocument = factory.createDocument();
-      request(server).post('/documents').send(publicDocument)
+      request(server).get(`/documents/${newDocumentId}`)
       .set('Authorization', fakeUserToken)
-        .expect(201)
-          .then((res) => {
-            expect(res.body.access).to.equal('public');
-            done();
-          });
+        .expect(200).then((res) => {
+          expect(res.body.access).to.equal('public');
+          done();
+        });
     });
 
     it('should update a document if requested by the admin', (done) => {
-      const updateDocument1 = factory.createDocument();
-      request(server).post('/documents')
-      .send(updateDocument1)
-        .set('Authorization', fakeAdminToken)
-        .expect(201)
-          .then((res) => {
-            request(server).put(`/documents/${res.body.id}`).send({
-              title: 'NewTitle',
-              access: 'private',
-              content: 'New updated document'
-            })
-            .set('Authorization', fakeAdminToken).expect(200)
-              .then((response) => {
-                expect(response.body.message).to.equal('Document Updated!');
-                done();
-              });
-          });
+      request(server).put(`/documents/${newDocumentId}`).send({
+        title: 'NewTitle',
+        access: 'private',
+        content: 'New updated document'
+      })
+      .set('Authorization', fakeAdminToken).expect(200)
+        .then((response) => {
+          expect(response.body.message).to.equal('Document Updated!');
+          done();
+        });
     });
 
     it('should update a document if requested by the owner', (done) => {
-      const updateDocument2 = factory.createDocument();
-      request(server).post('/documents')
-      .send(updateDocument2)
-        .set('Authorization', fakeUserToken)
-        .expect(201)
-          .then((res) => {
-            request(server).put(`/documents/${res.body.id}`).send({
-              title: 'NewTitle',
-              access: 'private',
-              content: 'New updated document'
-            })
-            .set('Authorization', fakeUserToken).expect(200)
-              .then((response) => {
-                expect(response.body.message).to.equal('Document Updated!');
-                done();
-              });
-          });
+      request(server).put(`/documents/${newDocumentId}`).send({
+        title: 'NewTitle1',
+        access: 'private1',
+        content: 'New updated document1'
+      })
+      .set('Authorization', fakeUserToken).expect(200)
+        .then((response) => {
+          expect(response.body.message).to.equal('Document Updated!');
+          done();
+        });
     });
 
     it('should not update a document if requested by another user', (done) => {
-      const updateDocument2 = factory.createDocument();
-      request(server).post('/documents')
-      .send(updateDocument2)
-        .set('Authorization', fakeAdminToken)
-        .expect(201)
-          .then((res) => {
-            request(server).put(`/documents/${res.body.id}`).send({
-              title: 'NewTitle',
-              access: 'private',
-              content: 'New updated document'
-            })
-            .set('Authorization', fakeUserToken).expect(401)
-              .then((response) => {
-                expect(response.body.message)
-                  .to.equal('Cannot Access document');
-                done();
-              });
-          });
+      request(server).put(`/documents/${newDocumentId}`).send({
+        title: 'NewTitle',
+        access: 'private',
+        content: 'New updated document'
+      })
+      .set('Authorization', testUserToken).expect(401)
+        .then((response) => {
+          expect(response.body.message)
+            .to.equal('Cannot Access document');
+          done();
+        });
     });
 
     it('should return not found if document to update does not exist', 
@@ -150,19 +135,13 @@ describe('Document', () => {
     });
 
     it('should not re-create a document that is already created', (done) => {
-      const fakeDuplicateDocument = factory.createDocument();
-      request(server).post('/documents').send(fakeDuplicateDocument)
-      .set('Authorization', fakeUserToken)
-        .expect(201)
-          .then(() => {
-            request(server).post('/documents').send(fakeDuplicateDocument)
-              .set('Authorization', fakeUserToken)
-                .expect(409)
-                  .then((res) => {
-                  expect(res.body.message).to.equal('Document already exist');
-                  done();
-                  });
-          });
+      request(server).post('/documents').send(fakeDocument)
+        .set('Authorization', fakeUserToken)
+          .expect(409)
+            .then((res) => {
+            expect(res.body.message).to.equal('Document already exist');
+            done();
+            });
     });
 
     it('should retrieve private documents if requested by owner', (done) => {
@@ -312,15 +291,9 @@ describe('Document', () => {
       });
 
       it('Should delete a document if requested by the owner', (done) => {
-        const fakeDeleteDocument = factory.createDocument();
-        request(server).post('/documents').send(fakeDeleteDocument)
-        .set('Authorization', fakeUserToken)
-          .expect(201)
-            .then((res) => {
-              request(server).delete(`/documents/${res.body.id}`)
-              .set('Authorization', fakeUserToken).expect(200)
-                .then(done());
-            });  
+        request(server).delete(`/documents/${newDocumentId}`)
+        .set('Authorization', fakeUserToken).expect(200)
+          .then(done());  
       });
     });
   });

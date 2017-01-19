@@ -4,10 +4,12 @@ const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
 
-let fakeUser;
-let fakeAdmin;
-let fakeUserToken;
-let fakeAdminToken;
+let fakeUser,
+  fakeAdmin,
+  fakeUserToken,
+  fakeAdminToken,
+  fakeUserId,
+  fakeAdminId;
 
 describe('Document Management System', () => {
   // Before running tests, drop all tables and recreate them
@@ -20,9 +22,11 @@ describe('Document Management System', () => {
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {
           fakeAdminToken = res.body.userToken;
+          fakeAdminId = res.body.user.id;
           request(server).post('/users').send(fakeUser)
             .then((res) => {
               fakeUserToken = res.body.userToken;
+              fakeUserId = res.body.user.id;
               done();
             });
         });
@@ -72,7 +76,7 @@ describe('Document Management System', () => {
     });
 
     it('should create users with default role of regular', (done) => {
-      request(server).get(`/users/${fakeUser.username}`)
+      request(server).get(`/users/${fakeUserId}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body).to.have.property('roleId');
@@ -82,7 +86,7 @@ describe('Document Management System', () => {
     });
 
     it('should return 404 when the user is not found', (done) => {
-      request(server).get('/users/fakeUser.username.not.found')
+      request(server).get('/users/80099890')
         .set('Authorization', fakeUserToken).expect(404)
           .then((res) => {
             expect(res.body.message).to.equal('User not Found');
@@ -91,7 +95,7 @@ describe('Document Management System', () => {
     });
 
     it('should create users with both first and last names', (done) => {
-      request(server).get(`/users/${fakeUser.username}`)
+      request(server).get(`/users/${fakeUserId}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body.name.first).to.equal(fakeUser.name.first);
@@ -152,7 +156,7 @@ describe('Document Management System', () => {
 
     it('should update a users information', (done) => {
       request(server)
-        .put(`/users/${fakeUser.username}`).send({
+        .put(`/users/${fakeUserId}`).send({
           email: 'Ethanet@email.com',
           name: {
             first: 'ethan',
@@ -167,7 +171,7 @@ describe('Document Management System', () => {
 
     it('should return 404 response if user detail is not found', (done) => {
       request(server)
-        .put('/users/invalid.app.username').send({
+        .put('/users/9067854').send({
           email: 'Ethanet@email.com',
           name: {
             first: 'ethan',
@@ -182,7 +186,7 @@ describe('Document Management System', () => {
 
     it('should delete a user if requested by admin', (done) => {
       request(server)
-        .delete(`/users/${fakeAdmin.username}`)
+        .delete(`/users/${fakeAdminId}`)
           .set('Authorization', fakeAdminToken)
             .expect(200)
               .then(done());
@@ -190,7 +194,7 @@ describe('Document Management System', () => {
 
     it('should return 404 if no user record is found to delete', (done) => {
       request(server)
-        .delete('/users/delete.invalid_user')
+        .delete('/users/900100')
           .set('Authorization', fakeAdminToken)
             .expect(404)
               .then(done());

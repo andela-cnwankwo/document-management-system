@@ -122,7 +122,7 @@ module.exports.updateUser = (req, res) => {
   // @TODO: Check request body to ensure data compliance.
   User.find({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   }).then((user) => {
     if (!user) {
@@ -159,7 +159,7 @@ module.exports.updateUser = (req, res) => {
 module.exports.deleteUser = (req, res) => {
   User.destroy({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   })
   .then((data) => {
