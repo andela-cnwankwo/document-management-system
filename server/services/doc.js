@@ -246,3 +246,32 @@ module.exports.searchDocuments = (req, res) => {
     return res.status(200).send(data);
   });
 };
+
+/**
+ * Delete a document
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {promise} http response.
+ */
+module.exports.deleteDocument = (req, res) => {
+  const token = req.token;
+  Doc.find({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then((doc) => {
+    if (!doc) {
+      return res.status(404).send({ message: 'Document Not found' });
+    }
+    if ((token.ownerRoleId !== 1) && (token.userId !== doc.ownerId)) {
+      return res.status(401).send({ message: 'Cannot access document' });
+    }
+  }).then(() => {
+    Doc.destroy({
+      where: {
+        id: req.params.id
+      }
+    }).then(() => res.status(200).send({ message: 'Document Removed' }));
+  });
+};

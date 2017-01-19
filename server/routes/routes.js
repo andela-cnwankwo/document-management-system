@@ -53,7 +53,8 @@ router.route('/documents')
 // Retrieve a single document
 router.route('/documents/:id')
   .get(validate.validateToken, documentService.getDocument)
-  .put(validate.validateToken, documentService.updateDocument);
+  .put(validate.validateToken, documentService.updateDocument)
+  .delete(validate.validateToken, documentService.deleteDocument);
 
 // Search documents
 router.route('/documents/find')
