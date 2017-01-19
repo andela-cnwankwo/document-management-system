@@ -25,10 +25,6 @@
     },
   "production": {
     "use_env_variable": "DATABASE_URL",
-    "username": null,
-    "password": null,
-    "database": "d90fh46qf4supn",
-    "host": "ec2-54-163-234-4.compute-1.amazonaws.com",
     "dialect": "postgres"
   }
 }
