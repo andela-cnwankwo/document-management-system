@@ -6,6 +6,7 @@ const sequelize = require('../test-helper');
 
 let fakeUser,
   fakeAdmin,
+  newUser,
   fakeUserToken,
   fakeAdminToken,
   fakeUserId,
@@ -18,6 +19,7 @@ describe('Document Management System', () => {
     sequelize.sync({ force: true }).then(() => {
       fakeUser = factory.createUser();
       fakeAdmin = factory.createUser();
+      newUser = factory.createUser();
       fakeAdmin.roleId = 1;
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {
@@ -35,7 +37,6 @@ describe('Document Management System', () => {
 
   describe('User', () => {
     it('should create a new user', (done) => {
-      const newUser = factory.createUser();
       request(server).post('/users').send(newUser).expect(201)
         .then((res) => {
           expect(res.body.user).to.have.property('roleId');
@@ -44,15 +45,10 @@ describe('Document Management System', () => {
     });
 
     it('should create a unique user', (done) => {
-      const uniqueUser = factory.createUser();
-      request(server).post('/users').send(uniqueUser).expect(201)
+      request(server).post('/users').send(newUser).expect(400)
         .then((res) => {
-          fakeUserToken = res.body.userToken;
-          request(server).post('/users').send(uniqueUser).expect(400)
-            .then((res) => {
-              expect(res.body.message).to.equal('User already exists');
-              done();
-            });
+          expect(res.body.message).to.equal('User already exists');
+          done();
         });
     });
 

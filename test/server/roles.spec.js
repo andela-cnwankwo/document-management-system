@@ -4,10 +4,12 @@ const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
 
-let fakeUser;
-let fakeAdmin;
-let fakeUserToken;
-let fakeAdminToken;
+let fakeUser,
+  fakeAdmin,
+  fakeUserToken,
+  fakeAdminToken,
+  fakeNewRole,
+  fakeNewRoleId;
 
 
 describe('Roles', () => {
@@ -15,6 +17,7 @@ describe('Roles', () => {
   // Create a default user and a default admin
   before((done) => {
     sequelize.sync({ force: true }).then(() => {
+      fakeNewRole = factory.createRole();
       fakeUser = factory.createUser();
       fakeAdmin = factory.createUser();
       fakeAdmin.roleId = 1;
@@ -24,7 +27,12 @@ describe('Roles', () => {
           request(server).post('/users').send(fakeUser)
             .then((res) => {
               fakeUserToken = res.body.userToken;
-              done();
+              request(server).post('/roles').send(fakeNewRole)
+                .set('Authorization', fakeAdminToken)
+                  .then((res) => {
+                    fakeNewRoleId = res.body.role.id;
+                    done();
+                  })
             });
         });
     });
@@ -95,68 +103,40 @@ describe('Roles', () => {
     });
 
     it('should update a role if requested by admin', (done) => {
-      const fakeNewRole = factory.createRole();
-      request(server).post('/roles')
-      .send(fakeNewRole)
-        .set('Authorization', fakeAdminToken)
-        .expect(201)
-          .then((res) => {
-            request(server).put(`/roles/${res.body.role.id}`).send({ title: 'NewTitle' })
-            .set('Authorization', fakeAdminToken).expect(200)
-              .then((res) => {
-                expect(res.body.message).to.equal('Role Updated!');
-                done();
-              });
-          });
+      request(server).put(`/roles/${fakeNewRoleId}`).send({ title: 'NewTitle' })
+      .set('Authorization', fakeAdminToken).expect(200)
+        .then((res) => {
+          expect(res.body.message).to.equal('Role Updated!');
+          done();
+        });
     });
 
     it('should not update role if requested by a regular user', (done) => {
-      const fakeNewRole1 = factory.createRole();
-        request(server).post('/roles')
-        .send(fakeNewRole1)
-          .set('Authorization', fakeAdminToken)
-          .expect(201)
-            .then((res) => {
-              request(server).put(`/roles/${res.body.role.id}`).send({ title: 'NewTitle' })
-              .set('Authorization', fakeUserToken).expect(401)
-                .then((res) => {
-                  expect(res.body.message).to.equal('User unauthorised! login as admin');
-                  done();
-                });
-            });
+      request(server).put(`/roles/${fakeNewRoleId}`).send({ title: 'NewTitle' })
+      .set('Authorization', fakeUserToken).expect(401)
+        .then((res) => {
+          expect(res.body.message).to.equal('User unauthorised! login as admin');
+          done();
+        });
+    });
+  
+    it('should not delete role if requested by a regular user', (done) => {
+      request(server).delete(`/roles/${fakeNewRoleId}`)
+      .set('Authorization', fakeUserToken).expect(401)
+        .then((res) => {
+          expect(res.body.message)
+            .to.equal('User unauthorised! login as admin');
+          done();
+        });
     });
 
     it('should delete role if requested by an admin', (done) => {
-      const fakeNewRole2 = factory.createRole();
-        request(server).post('/roles')
-        .send(fakeNewRole2)
-          .set('Authorization', fakeAdminToken)
-          .expect(201)
-            .then((res) => {
-              request(server).delete(`/roles/${res.body.role.id}`)
-              .set('Authorization', fakeAdminToken).expect(200)
-                .then((res) => {
-                  expect(res.body.message).to.equal('Role Removed!');
-                  done();
-                });
-            });
-    });
-
-    it('should not delete role if requested by a regular user', (done) => {
-      const fakeNewRole3 = factory.createRole();
-        request(server).post('/roles')
-        .send(fakeNewRole3)
-          .set('Authorization', fakeAdminToken)
-          .expect(201)
-            .then((res) => {
-              request(server).delete(`/roles/${res.body.role.id}`)
-              .set('Authorization', fakeUserToken).expect(401)
-                .then((res) => {
-                  expect(res.body.message)
-                    .to.equal('User unauthorised! login as admin');
-                  done();
-                });
-            });
+      request(server).delete(`/roles/${fakeNewRoleId}`)
+      .set('Authorization', fakeAdminToken).expect(200)
+        .then((res) => {
+          expect(res.body.message).to.equal('Role Removed!');
+          done();
+        });
     });
 
     it('should return 404 if admin tries to update a role that does not exist',
