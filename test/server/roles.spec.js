@@ -65,7 +65,7 @@ describe('Roles', () => {
     });
 
     it('should return all the roles if the user is an admin', (done) => {
-      request(server).get('/roles/all')
+      request(server).get('/roles')
       .set('Authorization', fakeAdminToken).expect(200)
         .then(done());
     });

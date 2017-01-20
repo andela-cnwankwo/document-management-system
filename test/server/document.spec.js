@@ -228,6 +228,18 @@ describe('Document', () => {
         .then(done());
     });
 
+    it('Should not return documents if limit or offset is invalid', 
+    (done) => {
+      const limit = -2;
+      const offset = 1;
+      request(server).get(`/documents?offset=${offset}&limit=${limit}`)
+      .set('Authorization', fakeAdminToken).expect(400)
+        .then((res) => {
+          expect(res.body.message).to.equal('Invalid request');
+          done();
+        });
+    });
+
     describe('Search Documents', () => {
       it('Should return documents given a criteria and created by a role',
       (done) => {
@@ -247,6 +259,19 @@ describe('Document', () => {
         .set('Authorization', fakeUserToken).expect(401)
           .then((res) => {
             expect(res.body.message).to.equal('Cannot Access document');
+            done();
+          });
+      });
+  
+      it('Should not return documents if limit is invalid', 
+      (done) => {
+        const limit = -2;
+        const roleId = 1;
+        request(server)
+        .post(`/documents/find?limit=${limit}&ownerRoleId=${roleId}`)
+        .set('Authorization', fakeUserToken).expect(400)
+          .then((res) => {
+            expect(res.body.message).to.equal('Invalid request');
             done();
           });
       });

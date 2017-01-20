@@ -111,6 +111,10 @@ module.exports.updateDocument = (req, res) => {
 module.exports.getAllDocuments = (req, res) => {
   const token = req.token;
   let ownerId;
+  if (((typeof req.query.limit !== 'number') && req.query.limit < 0)
+  || ((typeof req.query.offset !== 'number') && req.query.offset < 0)) {
+    return res.status(400).send({ message: 'Invalid request' });
+  }
   if (req.query.username) {
     User.find({
       where: {
@@ -201,6 +205,9 @@ module.exports.getAllDocuments = (req, res) => {
 module.exports.searchDocuments = (req, res) => {
   const token = req.token;
   let query;
+  if ((typeof req.query.limit !== 'number') && req.query.limit < 0) {
+    return res.status(400).send({ message: 'Invalid request' });
+  }
   if (token.userRoleId === 1) {
     query = { ownerRoleId: req.query.ownerRoleId };
     if (req.query.date) {

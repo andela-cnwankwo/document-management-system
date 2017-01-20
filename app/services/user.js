@@ -4,7 +4,7 @@ const db = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 
-const User = db.User;
+const User = db.User, Role = db.Role;
 const secret = process.env.SECRET || 'documentmanagement'; // Specify a secret to sign json web tokens
 
 /**
@@ -16,33 +16,44 @@ const secret = process.env.SECRET || 'documentmanagement'; // Specify a secret t
 module.exports.createUser = (req, res) => {
   const newUser = req.body;
   const password = bcrypt.hashSync(newUser.password);
-  User.findOrCreate({
+  Role.find({
     where: {
-      email: newUser.email
-    },
-    defaults: {
-      username: newUser.username,
-      name: newUser.name,
-      email: newUser.email,
-      password,
-      roleId: newUser.roleId
+      id: newUser.roleId
     }
   })
-    .spread((user, created) => { // used for returning multiple arguments.
-      if (created) {
-        const token = jwt.sign({
-          userId: user.id,
-          userName: user.username,
-          userRoleId: user.roleId
-        }, secret, { expiresIn: '1 day' });
-        return res.status(201).send({
-          user,
-          userToken: token,
-          message: 'New User Created! Token expires in a day.'
-        });
+  .then((data) => {
+    if (!data) {
+      return res.status(400).send({ message: 'Invalid roleId specified' });
+    }
+
+    User.findOrCreate({
+      where: {
+        email: newUser.email
+      },
+      defaults: {
+        username: newUser.username,
+        name: newUser.name,
+        email: newUser.email,
+        password,
+        roleId: newUser.roleId
       }
-      return res.status(400).send({ message: 'User already exists' });
-    });
+    })
+      .spread((user, created) => { // used for returning multiple arguments.
+        if (created) {
+          const token = jwt.sign({
+            userId: user.id,
+            userName: user.username,
+            userRoleId: user.roleId
+          }, secret, { expiresIn: '1 day' });
+          return res.status(201).send({
+            user,
+            userToken: token,
+            message: 'New User Created! Token expires in a day.'
+          });
+        }
+        return res.status(400).send({ message: 'User already exists' });
+      });
+  });
 };
 
 /**

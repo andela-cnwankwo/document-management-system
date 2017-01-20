@@ -33,11 +33,9 @@ router.route('/logout')
 
 // Route to create roles
 router.route('/roles')
-  .post(validate.validateAdmin, roleService.createRole);
-
-// Retrieve all roles
-router.route('/roles/all')
+  .post(validate.validateAdmin, roleService.createRole)
   .get(validate.validateAdmin, roleService.getAllRoles);
+
 
 // Retrieve a single role
 router.route('/roles/:id')

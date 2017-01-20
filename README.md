@@ -94,19 +94,19 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /logout </td> <td> POST </td> <td> logout a user </td> <td> none </td> <td> none </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> GET </td> <td> get a user </td> <td> none </td> <td> All users </td>
+<td> /users/`id` </td> <td> GET </td> <td> get a user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> PUT </td> <td> Update user record</td> <td> new user data </td> <td> Current user and admin </td>
+<td> /users/`id` </td> <td> PUT </td> <td> Update user record</td> <td> new user data </td> <td> Current user and admin </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> DELETE </td> <td> Remove a user record</td> <td> none </td> <td> admin </td>
+<td> /users/`id` </td> <td> DELETE </td> <td> Remove a user record</td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
 <td> /roles </td> <td> POST </td> <td> Creates a new role </td> <td> title </td> <td> admin </td>
 </tr>
 <tr>
-<td> /roles/all </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
+<td> /roles </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
 <td> /roles/`id` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>

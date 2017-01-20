@@ -52,6 +52,16 @@ describe('Document Management System', () => {
         });
     });
 
+    it('should not create a user if role does not exist', (done) => {
+      invalidRoleUser = factory.createUser();
+      invalidRoleUser.roleId = 9000010;
+      request(server).post('/users').send(invalidRoleUser).expect(400)
+        .then((res) => {
+          expect(res.body.message).to.equal('Invalid roleId specified');
+          done();
+        });
+    });
+
     it('should login a registered user', (done) => {
       // Default admin account seeded into the database.
       request(server).post('/login')
@@ -141,15 +151,6 @@ describe('Document Management System', () => {
       }
     );
 
-    it('should return unauthorised if the user is not an admin', (done) => {
-      request(server)
-        .get('/users').set('Authorization', fakeUserToken).expect(401)
-        .then((res) => {
-        expect(res.body.message).to.equal('User unauthorised! login as admin');
-        done();
-        });
-    });
-
     it('should update a users information', (done) => {
       request(server)
         .put(`/users/${fakeUserId}`).send({
@@ -163,6 +164,15 @@ describe('Document Management System', () => {
         }).set('Authorization', fakeUserToken)
           .expect(200)
             .then(done());
+    });
+
+    it('should return unauthorised if the user is not an admin', (done) => {
+      request(server)
+        .get('/users').set('Authorization', fakeUserToken).expect(401)
+        .then((res) => {
+        expect(res.body.message).to.equal('User unauthorised! login as admin');
+        done();
+        });
     });
 
     it('should return 404 response if user detail is not found', (done) => {
