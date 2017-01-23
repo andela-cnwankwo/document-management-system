@@ -1,32 +1,18 @@
 {
   "development": {
-      "username": null,
-      "password": null,
-      "database": "dms",
-      "host": "127.0.0.1",
-      "port": "5432",
+      "use_env_variable": "DATABASE_URL",
       "dialect": "postgres"
     },
     "test": {
-      "username": null,
-      "password": null,
-      "database": "testdms",
-      "host": "127.0.0.1",
-      "port": "5432",
+      "use_env_variable": "DATABASE_URL",
       "dialect": "postgres"
     },
      "travis": {
-      "username": null,
-      "password": null,
-      "database": "travis_ci_test",
-      "host": "127.0.0.1",
-      "port": "5432",
+      "use_env_variable": "DATABASE_URL",
       "dialect": "postgres"
     },
   "production": {
     "use_env_variable": "DATABASE_URL",
-    "database": "d90fh46qf4supn",
-    "host": null,
     "dialect": "postgres"
   }
 }

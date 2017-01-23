@@ -9,10 +9,7 @@ const config = require('../../settings/config.json')[env];
 const db = {};
 const basename = path.basename(module.filename);
 
-const sequelize = (process.env.NODE_ENV === 'production')
-  ? new Sequelize(process.env.DATABASE_URL)
-  : new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME,
-  process.env.DB_PASSWORD, config);
+const sequelize = new Sequelize(process.env[config.use_env_variable], config);
 
 fs
   .readdirSync(__dirname)

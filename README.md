@@ -142,9 +142,9 @@ Check requirements above for basic setup before testing. Follow the steps below 
 - *steps*:
     - Create a new postgres database (`Requires postgres installed`)
     - Update the `.env.sample` file with your database information and rename it to `.env`
-    - Seed data into your new database using the command: `NODE_ENV=test npm run seed`
-    - Migrate the database models using the command: `NODE_ENV=test npm run migrate-test`
-    - Test the application using the command: `NODE_ENV=test npm test`
+    - Seed data into your new database using the command: `npm run seed`
+    - Migrate the database models using the command: `npm run migrate-test`
+    - Test the application using the command: `npm test`
 
 ## Collaboration
 To contribute to this application;
