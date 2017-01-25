@@ -1,7 +1,7 @@
 const express = require('express');
-const userService = require('../../server/services/user');
-const roleService = require('../../server/services/role');
-const documentService = require('../../server/services/doc');
+const userService = require('../../app/services/user');
+const roleService = require('../../app/services/role');
+const documentService = require('../../app/services/doc');
 const validate = require('../middlewares/auth');
 
 const router = express.Router();
@@ -19,7 +19,7 @@ router.route('/users')
   .get(validate.validateAdmin, userService.getAllUsers);
 
 // Route to retrieve single user data
-router.route('/users/:username')
+router.route('/users/:id')
   .get(validate.validateToken, userService.getUser)
   .put(validate.validateToken, userService.updateUser)
   .delete(validate.validateAdmin, userService.deleteUser);
@@ -33,15 +33,15 @@ router.route('/logout')
 
 // Route to create roles
 router.route('/roles')
-  .post(validate.validateAdmin, roleService.createRole);
-
-// Retrieve all roles
-router.route('/roles/all')
+  .post(validate.validateAdmin, roleService.createRole)
   .get(validate.validateAdmin, roleService.getAllRoles);
 
+
 // Retrieve a single role
-router.route('/roles/:title')
-  .get(validate.validateAdmin, roleService.getRole);
+router.route('/roles/:id')
+  .get(validate.validateAdmin, roleService.getRole)
+  .put(validate.validateAdmin, roleService.updateRole)
+  .delete(validate.validateAdmin, roleService.deleteRole);
 
 // Route for documents
 router.route('/documents')
@@ -50,7 +50,9 @@ router.route('/documents')
 
 // Retrieve a single document
 router.route('/documents/:id')
-  .get(validate.validateToken, documentService.getDocument);
+  .get(validate.validateToken, documentService.getDocument)
+  .put(validate.validateToken, documentService.updateDocument)
+  .delete(validate.validateToken, documentService.deleteDocument);
 
 // Search documents
 router.route('/documents/find')

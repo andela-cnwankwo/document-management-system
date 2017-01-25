@@ -1,17 +1,8 @@
 //  Defines various services for the role object
 
-const Sequelize = require('sequelize');
-// Require sequelize from the connection settings
-const sequelize = require('../../settings/connect');
-const jwt = require('jsonwebtoken');
+const db = require('../models');
 
-const secret = process.env.SECRET || 'documentmanagement';
-
-// Call the doc model and specify the arguments.
-const Doc = require('../../app/models/doc')(sequelize, Sequelize);
-const User = require('../../app/models/user')(sequelize, Sequelize);
-
-sequelize.sync({});
+const Doc = db.Doc, User = db.User;
 
 /**
  * Create a new document
@@ -20,8 +11,7 @@ sequelize.sync({});
  * @returns {boolean} true if created, false otherwise.
  */
 module.exports.createDocument = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   const newDocument = req.body;
   Doc.findOrCreate({
     where: {
@@ -39,9 +29,12 @@ module.exports.createDocument = (req, res) => {
       ownerRoleId: token.userRoleId
     }
   })
-    .spread((doc, created) => (created)
-        ? res.status(201).send(doc)
-        : res.status(409).send({ message: 'Document already exist' }));
+    .spread((doc, created) => {
+      if (!created) {
+        return res.status(409).send({ message: 'Document already exist' });
+      }
+      return res.status(201).send(doc);
+    });
 };
 
 /**
@@ -51,13 +44,14 @@ module.exports.createDocument = (req, res) => {
  * @returns {object} specified document.
  */
 module.exports.getDocument = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   Doc.find({
     where: {
       id: req.params.id
     },
-    attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
+    attributes: [
+      'id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId'
+    ]
   }).then((data) => {
     if (!data) {
       return res.status(404).send({ message: 'Document not found' });
@@ -68,10 +62,43 @@ module.exports.getDocument = (req, res) => {
     if (data.ownerId === token.userId) {
       return res.status(200).send(data);
     }
-    if (data && token.userRoleId === data.dataValues.ownerRoleId && data.access === 'role') {
+    if (data
+    && token.userRoleId === data.dataValues.ownerRoleId
+    && data.access === 'role') {
       return res.status(200).send(data);
     }
     return res.status(401).send({ message: 'Cannot Access document' });
+  });
+};
+
+/**
+ * Update created document
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {object} specified document.
+ */
+module.exports.updateDocument = (req, res) => {
+  // @TODO: Check request body to ensure data compliance.
+  const token = req.token;
+  Doc.find({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId'
+    ]
+  }).then((doc) => {
+    if (!doc) {
+      return res.status(404).send({ message: 'Document not found' });
+    }
+    if ((token.userId !== doc.ownerId) && (token.userRoleId !== 1)) {
+      return res.status(401).send({ message: 'Cannot Access document' });
+    }
+    doc.update({
+      title: req.body.title,
+      access: req.body.access,
+      content: req.body.content
+    }).then(() => res.status(200).send({ message: 'Document Updated!' }));
   });
 };
 
@@ -82,9 +109,12 @@ module.exports.getDocument = (req, res) => {
  * @returns {object} specified document.
  */
 module.exports.getAllDocuments = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   let ownerId;
+  if (((typeof req.query.limit !== 'number') && req.query.limit < 0)
+  || ((typeof req.query.offset !== 'number') && req.query.offset < 0)) {
+    return res.status(400).send({ message: 'Invalid request' });
+  }
   if (req.query.username) {
     User.find({
       where: {
@@ -101,7 +131,7 @@ module.exports.getAllDocuments = (req, res) => {
           offset: req.query.offset,
           limit: req.query.limit
         })
-          .then(data => res.status(200).send(data));
+          .then(response => res.status(200).send(response));
       } else {
         Doc.findAll({ order: [['published', 'DESC']],
           limit: req.query.limit,
@@ -117,8 +147,16 @@ module.exports.getAllDocuments = (req, res) => {
               }
             }
           },
-          attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
-        }).then(data => res.status(200).send(data)
+          attributes: [
+            'id',
+            'published',
+            'title',
+            'access',
+            'content',
+            'ownerId',
+            'ownerRoleId'
+          ]
+        }).then(response => res.status(200).send(response)
         );
       }
     }
@@ -144,7 +182,15 @@ module.exports.getAllDocuments = (req, res) => {
           }
         }
       },
-      attributes: ['id', 'published', 'title', 'access', 'content', 'ownerId', 'ownerRoleId']
+      attributes: [
+        'id',
+        'published',
+        'title',
+        'access',
+        'content',
+        'ownerId',
+        'ownerRoleId'
+      ]
     }).then(data => res.status(200).send(data)
     );
   }
@@ -157,9 +203,11 @@ module.exports.getAllDocuments = (req, res) => {
  * @returns {object} all required documents
  */
 module.exports.searchDocuments = (req, res) => {
-  const jwtcode = req.headers.authorization;
-  const token = jwt.verify(jwtcode, secret);
+  const token = req.token;
   let query;
+  if ((typeof req.query.limit !== 'number') && req.query.limit < 0) {
+    return res.status(400).send({ message: 'Invalid request' });
+  }
   if (token.userRoleId === 1) {
     query = { ownerRoleId: req.query.ownerRoleId };
     if (req.query.date) {
@@ -168,7 +216,7 @@ module.exports.searchDocuments = (req, res) => {
       };
     }
   } else {
-    // If the user is trying to search a different role level, return unauthorised;
+    // return authorized If user is trying to search a different role;
     if (parseInt(req.query.ownerRoleId, 10) !== token.userRoleId) {
       return res.status(401).send({ message: 'Cannot Access document' });
     }
@@ -192,7 +240,39 @@ module.exports.searchDocuments = (req, res) => {
     limit: req.query.limit,
     where: query
   })
-  .then(data => (data)
-    ? res.status(200).send(data)
-    : res.status(404).send({ message: 'No Result Found' }));
+  .then((data) => {
+    if (!data) {
+      return res.status(404).send({ message: 'No Result Found' });
+    }
+    return res.status(200).send(data);
+  });
+};
+
+/**
+ * Delete a document
+ * @param {object} req
+ * @param {function} res // Object
+ * @returns {promise} http response.
+ */
+module.exports.deleteDocument = (req, res) => {
+  const token = req.token;
+  Doc.find({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then((doc) => {
+    if (!doc) {
+      return res.status(404).send({ message: 'Document Not found' });
+    }
+    if ((token.ownerRoleId !== 1) && (token.userId !== doc.ownerId)) {
+      return res.status(401).send({ message: 'Cannot access document' });
+    }
+  }).then(() => {
+    Doc.destroy({
+      where: {
+        id: req.params.id
+      }
+    }).then(() => res.status(200).send({ message: 'Document Removed' }));
+  });
 };

@@ -1,14 +1,11 @@
 //  Defines various services for the user object
 
-const Sequelize = require('sequelize');
-const sequelize = require('../../settings/connect');
-const User = require('../../app/models/user')(sequelize, Sequelize);
+const db = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 
+const User = db.User, Role = db.Role;
 const secret = process.env.SECRET || 'documentmanagement'; // Specify a secret to sign json web tokens
-
-sequelize.sync({});
 
 /**
  * Create a new user
@@ -19,29 +16,44 @@ sequelize.sync({});
 module.exports.createUser = (req, res) => {
   const newUser = req.body;
   const password = bcrypt.hashSync(newUser.password);
-  User.findOrCreate({
+  Role.find({
     where: {
-      email: newUser.email
-    },
-    defaults: {
-      username: newUser.username,
-      name: newUser.name,
-      email: newUser.email,
-      password,
-      roleId: newUser.roleId
+      id: newUser.roleId
     }
   })
-    .spread((user, created) => { // spread operator used for returning multiple arguments.
-      if (created) {
-        const token = jwt.sign({
-          userId: user.id,
-          userName: user.username,
-          userRoleId: user.roleId
-        }, secret, { expiresIn: '1 day' });
-        return res.status(201).send({ user, userToken: token, message: 'New User Created! Token expires in a day.' });
+  .then((data) => {
+    if (!data) {
+      return res.status(400).send({ message: 'Invalid roleId specified' });
+    }
+
+    User.findOrCreate({
+      where: {
+        email: newUser.email
+      },
+      defaults: {
+        username: newUser.username,
+        name: newUser.name,
+        email: newUser.email,
+        password,
+        roleId: newUser.roleId
       }
-      return res.status(400).send({ message: 'User already exists' });
-    });
+    })
+      .spread((user, created) => { // used for returning multiple arguments.
+        if (created) {
+          const token = jwt.sign({
+            userId: user.id,
+            userName: user.username,
+            userRoleId: user.roleId
+          }, secret, { expiresIn: '1 day' });
+          return res.status(201).send({
+            user,
+            userToken: token,
+            message: 'New User Created! Token expires in a day.'
+          });
+        }
+        return res.status(400).send({ message: 'User already exists' });
+      });
+  });
 };
 
 /**
@@ -51,27 +63,32 @@ module.exports.createUser = (req, res) => {
  * @returns {promise} http response.
  */
 module.exports.login = (req, res) => {
-  if (!req.query.username || !req.query.password) {
-    return res.status(400).send({ message: 'Invalid request, specify username and password' });
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).send({
+      message: 'Invalid request, specify username and password'
+    });
   }
   User.find({
     where: {
-      username: req.query.username
+      username: req.body.username
     }
   })
   .then((data) => {
     if (!data) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'Invalid username or password' });
     }
-    if (!bcrypt.compareSync(req.query.password, data.password)) {
-      return res.status(404).send({ message: 'User not found' });
+    if (!bcrypt.compareSync(req.body.password, data.password)) {
+      return res.status(404).send({ message: 'Invalid username or password' });
     }
     const token = jwt.sign({
       userId: data.id,
       userName: data.username,
       userRoleId: data.roleId
     }, secret, { expiresIn: '1 day' });
-    return res.status(200).send({ userToken: token, message: 'Login Successful! Token expires in a day.' });
+    return res.status(200).send({
+      userToken: token,
+      message: 'Login Successful! Token expires in a day.'
+    });
   });
 };
 
@@ -80,13 +97,13 @@ module.exports.login = (req, res) => {
  * Get a user data based on the email specified
  * @param {object} req
  * @param {function} res // Object
- * @returns {object} specied user.
+ * @returns {object} specified user.
  */
 module.exports.getUser = (req, res) => {
-  // @TODO: get user details only when it is the currently looged in user or an admin.
+  // @TODO: get user details only when it is the currently looged in user
   User.find({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   }).then((data) => {
     if (data) {
@@ -102,7 +119,9 @@ module.exports.getUser = (req, res) => {
  * @param {function} res // Object
  * @returns {object} specied user.
  */
-module.exports.logout = (req, res) => res.status(200).send({ message: 'Logout Successful' });
+module.exports.logout = (req, res) => res.status(200).send({
+  message: 'Logout Successful'
+});
 
 /**
  * Update user information
@@ -111,9 +130,10 @@ module.exports.logout = (req, res) => res.status(200).send({ message: 'Logout Su
  * @returns {promise} http response.
  */
 module.exports.updateUser = (req, res) => {
+  // @TODO: Check request body to ensure data compliance.
   User.find({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   }).then((user) => {
     if (!user) {
@@ -122,8 +142,8 @@ module.exports.updateUser = (req, res) => {
     user.update({
       email: req.body.email,
       name: {
-        first: req.body.name.first,
-        last: req.body.name.last
+        first: req.body.firstname,
+        last: req.body.lastname
       },
       password: bcrypt.hashSync(req.body.password),
       roleId: req.body.roleId
@@ -133,7 +153,10 @@ module.exports.updateUser = (req, res) => {
         userName: updatedUser.username,
         userRoleId: updatedUser.roleId
       }, secret, { expiresIn: '1 day' });
-      return res.status(200).send({ userToken: token, message: 'Update Successful! Token expires in a day.' });
+      return res.status(200).send({
+        userToken: token,
+        message: 'Update Successful! Token expires in a day.'
+      });
     });
   });
 };
@@ -147,7 +170,7 @@ module.exports.updateUser = (req, res) => {
 module.exports.deleteUser = (req, res) => {
   User.destroy({
     where: {
-      username: req.params.username
+      id: req.params.id
     }
   })
   .then((data) => {
@@ -162,7 +185,7 @@ module.exports.deleteUser = (req, res) => {
  * Get a user data based on the email specified
  * @param {object} req
  * @param {function} res // Object
- * @returns {object} specied user.
+ * @returns {object} specied user object.
  */
 module.exports.getAllUsers = (req, res) => {
   User.findAll({}).then((data) => {

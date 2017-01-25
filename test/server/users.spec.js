@@ -4,10 +4,13 @@ const factory = require('../factory');
 const server = require('../../settings/app-config');
 const sequelize = require('../test-helper');
 
-let fakeUser;
-let fakeAdmin;
-let fakeUserToken;
-let fakeAdminToken;
+let fakeUser,
+  fakeAdmin,
+  newUser,
+  fakeUserToken,
+  fakeAdminToken,
+  fakeUserId,
+  fakeAdminId;
 
 describe('Document Management System', () => {
   // Before running tests, drop all tables and recreate them
@@ -16,13 +19,16 @@ describe('Document Management System', () => {
     sequelize.sync({ force: true }).then(() => {
       fakeUser = factory.createUser();
       fakeAdmin = factory.createUser();
+      newUser = factory.createUser();
       fakeAdmin.roleId = 1;
       request(server).post('/users').send(fakeAdmin)
         .then((res) => {
           fakeAdminToken = res.body.userToken;
+          fakeAdminId = res.body.user.id;
           request(server).post('/users').send(fakeUser)
             .then((res) => {
               fakeUserToken = res.body.userToken;
+              fakeUserId = res.body.user.id;
               done();
             });
         });
@@ -31,7 +37,6 @@ describe('Document Management System', () => {
 
   describe('User', () => {
     it('should create a new user', (done) => {
-      const newUser = factory.createUser();
       request(server).post('/users').send(newUser).expect(201)
         .then((res) => {
           expect(res.body.user).to.have.property('roleId');
@@ -40,29 +45,44 @@ describe('Document Management System', () => {
     });
 
     it('should create a unique user', (done) => {
-      const uniqueUser = factory.createUser();
-      request(server).post('/users').send(uniqueUser).expect(201)
+      request(server).post('/users').send(newUser).expect(400)
         .then((res) => {
-          fakeUserToken = res.body.userToken;
-          request(server).post('/users').send(uniqueUser).expect(400)
-            .then((res) => {
-              expect(res.body.message).to.equal('User already exists');
-              done();
-            });
+          expect(res.body.message).to.equal('User already exists');
+          done();
         });
+    });
+
+    it('should not create a user if role does not exist', (done) => {
+      invalidRoleUser = factory.createUser();
+      invalidRoleUser.roleId = 9000010;
+      request(server).post('/users').send(invalidRoleUser).expect(400)
+        .then((res) => {
+          expect(res.body.message).to.equal('Invalid roleId specified');
+          done();
+        });
+    });
+
+    it('should login a registered user', (done) => {
+      // Default admin account seeded into the database.
+      request(server).post('/login')
+      .send({ username: 'admin', password: 'admin'})
+      .expect(200)
+        .then(done());
     });
 
     it('should return error for login if password is incorrect', (done) => {
       // Default admin account seeded into the database.
-      request(server).post('/login?username=admin&password=wrongpassword').expect(404)
+      request(server).post('/login')
+      .send({ username: 'admin', password: 'wrongpassword'})
+      .expect(404)
         .then((res) => {
-          expect(res.body.message).to.equal('User not found');
+          expect(res.body.message).to.equal('Invalid username or password');
           done();
         });
     });
 
     it('should create users with default role of regular', (done) => {
-      request(server).get(`/users/${fakeUser.username}`)
+      request(server).get(`/users/${fakeUserId}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body).to.have.property('roleId');
@@ -72,7 +92,7 @@ describe('Document Management System', () => {
     });
 
     it('should return 404 when the user is not found', (done) => {
-      request(server).get('/users/fakeUser.username.not.found')
+      request(server).get('/users/80099890')
         .set('Authorization', fakeUserToken).expect(404)
           .then((res) => {
             expect(res.body.message).to.equal('User not Found');
@@ -81,7 +101,7 @@ describe('Document Management System', () => {
     });
 
     it('should create users with both first and last names', (done) => {
-      request(server).get(`/users/${fakeUser.username}`)
+      request(server).get(`/users/${fakeUserId}`)
         .set('Authorization', fakeUserToken).expect(200)
           .then((res) => {
             expect(res.body.name.first).to.equal(fakeUser.name.first);
@@ -92,7 +112,8 @@ describe('Document Management System', () => {
 
     it('should login a registered user', (done) => {
       request(server)
-      .post(`/login?username=${fakeUser.username}&password=${fakeUser.password}`)
+      .post("/login")
+      .send({ username: fakeUser.username, password: fakeUser.password })
         .expect(200)
           .then(done());
     });
@@ -105,15 +126,18 @@ describe('Document Management System', () => {
     it('should return error if no login details is specified', (done) => {
       request(server).post('/login').expect(400)
         .then((res) => {
-          expect(res.body.message).to.equal('Invalid request, specify username and password');
+          expect(res.body.message)
+            .to.equal('Invalid request, specify username and password');
           done();
         });
     });
 
     it('should return not found if user is not registered', (done) => {
-      request(server).post("/login?username=''&password=''").expect(404)
+      request(server).post("/login").send({ username: "", password: "" })
+      .expect(400)
         .then((res) => {
-          expect(res.body.message).to.equal('User not found');
+          expect(res.body.message)
+            .to.equal('Invalid request, specify username and password');
           done();
         });
     });
@@ -127,18 +151,9 @@ describe('Document Management System', () => {
       }
     );
 
-    it('should return unauthorised if the user is not an admin', (done) => {
-      request(server)
-        .get('/users').set('Authorization', fakeUserToken).expect(401)
-        .then((res) => {
-          expect(res.body.message).to.equal('User unauthorised! login as admin');
-          done();
-        });
-    });
-
     it('should update a users information', (done) => {
       request(server)
-        .put(`/users/${fakeUser.username}`).send({
+        .put(`/users/${fakeUserId}`).send({
           email: 'Ethanet@email.com',
           name: {
             first: 'ethan',
@@ -151,9 +166,18 @@ describe('Document Management System', () => {
             .then(done());
     });
 
+    it('should return unauthorised if the user is not an admin', (done) => {
+      request(server)
+        .get('/users').set('Authorization', fakeUserToken).expect(401)
+        .then((res) => {
+        expect(res.body.message).to.equal('User unauthorised! login as admin');
+        done();
+        });
+    });
+
     it('should return 404 response if user detail is not found', (done) => {
       request(server)
-        .put('/users/invalid.app.username').send({
+        .put('/users/9067854').send({
           email: 'Ethanet@email.com',
           name: {
             first: 'ethan',
@@ -168,7 +192,7 @@ describe('Document Management System', () => {
 
     it('should delete a user if requested by admin', (done) => {
       request(server)
-        .delete(`/users/${fakeAdmin.username}`)
+        .delete(`/users/${fakeAdminId}`)
           .set('Authorization', fakeAdminToken)
             .expect(200)
               .then(done());
@@ -176,7 +200,7 @@ describe('Document Management System', () => {
 
     it('should return 404 if no user record is found to delete', (done) => {
       request(server)
-        .delete('/users/delete.invalid_user')
+        .delete('/users/900100')
           .set('Authorization', fakeAdminToken)
             .expect(404)
               .then(done());

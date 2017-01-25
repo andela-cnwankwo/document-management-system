@@ -75,6 +75,8 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 
 ### Endpoints:
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/78750173d816f51ab06c)
+
 <table> 
 <tr>
 <th> Endpoint </th> <th> Method </th> <th> Action </th> <th> Payload Data </th> <th> Authorization </th>
@@ -86,28 +88,34 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /users </td> <td> GET </td> <td> show all registered users </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
-<td> /login </td> <td> POST </td> <td> login a registered user </td> <td> username and password as request parameters. </td> <td> none </td>
+<td> /login </td> <td> POST </td> <td> login a registered user </td> <td> username and password as request body. </td> <td> none </td>
 </tr>
 <tr>
 <td> /logout </td> <td> POST </td> <td> logout a user </td> <td> none </td> <td> none </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> GET </td> <td> get a user </td> <td> none </td> <td> All users </td>
+<td> /users/`id` </td> <td> GET </td> <td> get a user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> PUT </td> <td> Update user record</td> <td> new user data </td> <td> Current user and admin </td>
+<td> /users/`id` </td> <td> PUT </td> <td> Update user record</td> <td> new user data </td> <td> Current user and admin </td>
 </tr>
 <tr>
-<td> /users/`username` </td> <td> DELETE </td> <td> Remove a user record</td> <td> none </td> <td> admin </td>
+<td> /users/`id` </td> <td> DELETE </td> <td> Remove a user record</td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
 <td> /roles </td> <td> POST </td> <td> Creates a new role </td> <td> title </td> <td> admin </td>
 </tr>
 <tr>
-<td> /roles/all </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
+<td> /roles </td> <td> GET </td> <td> Shows all created roles </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
-<td> /roles/`title` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
+<td> /roles/`id` </td> <td> GET </td> <td> Shows a particular role </td> <td> none </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles/`id` </td> <td> PUT </td> <td> Update a particular role </td> <td> title </td> <td> admin </td>
+</tr>
+<tr>
+<td> /roles/`id` </td> <td> DELETE </td> <td> Delete a particular role </td> <td> none </td> <td> admin </td>
 </tr>
 <tr>
 <td> /documents </td> <td> POST </td> <td> Create a new document </td> <td> title, content, access, ownerId, ownerRoleId </td> <td> All users </td>
@@ -119,7 +127,13 @@ Operations are carried out on the application by making API calls (`POST, GET, P
 <td> /documents/`id` </td> <td> GET </td> <td> Shows a document accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 <tr>
-<td> /documents/find </td> <td> GET </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
+<td> /documents/`id` </td> <td> PUT </td> <td> Update a document accessible to the current user </td> <td> title, access, content </td> <td> All users </td>
+</tr>
+<tr>
+<td> /documents/`id` </td> <td> DELETE </td> <td> Delete a document created by the current user </td> <td> none </td> <td> Current user and admin </td>
+</tr>
+<tr>
+<td> /documents/find </td> <td> POST </td> <td> Searches for the specified documents accessible to the current user </td> <td> none </td> <td> All users </td>
 </tr>
 </table>
 
@@ -128,9 +142,9 @@ Check requirements above for basic setup before testing. Follow the steps below 
 - *steps*:
     - Create a new postgres database (`Requires postgres installed`)
     - Update the `.env.sample` file with your database information and rename it to `.env`
-    - Seed data into your new database using the command: `NODE_ENV=test npm run seed`
-    - Migrate the database models using the command: `NODE_ENV=test npm run migrate-test`
-    - Test the application using the command: `NODE_ENV=test npm test`
+    - Seed data into your new database using the command: `npm run seed`
+    - Migrate the database models using the command: `npm run migrate-test`
+    - Test the application using the command: `npm test`
 
 ## Collaboration
 To contribute to this application;

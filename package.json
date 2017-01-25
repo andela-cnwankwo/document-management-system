@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/andela-cnwankwo/document-management-system#readme",
   "devDependencies": {
+  },
+  "dependencies": {
     "babel-preset-latest": "^6.16.0",
     "bluebird": "^3.4.6",
     "chai": "^3.5.0",
@@ -33,9 +35,7 @@
     "faker": "^3.1.0",
     "mocha": "^3.1.2",
     "nodemon": "^1.11.0",
-    "supertest": "^2.0.1"
-  },
-  "dependencies": {
+    "supertest": "^2.0.1",
     "babel": "^6.5.2",
     "babel-core": "^6.18.2",
     "babel-polyfill": "^6.16.0",

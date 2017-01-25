@@ -17,9 +17,14 @@ const validation = {
       return res.status(401).send({ message: 'User unauthorised!' });
     }
     const jwtcode = req.headers.authorization;
-    jwt.verify(jwtcode, secret, (err, token) => (err)
-    ? res.status(401).send({ message: 'Invalid Token, User unauthorised!' })
-    : done()
+    jwt.verify(jwtcode, secret, (err, token) => {
+      if (err) {
+        return res.status(401)
+          .send({ message: 'Invalid Token, User unauthorised!' });
+      }
+      req.token = token;
+      done();
+    }
     );
   },
 
@@ -36,11 +41,17 @@ const validation = {
       return res.status(401).send({ message: 'User unauthorised!' });
     }
     const jwtcode = req.headers.authorization;
-    jwt.verify(jwtcode, secret, (err, token) => (err)
-    ? res.status(401).send({ message: 'Invalid Token, User unauthorised!' })
-    : (token.userRoleId !== 1)
-    ? res.status(401).send({ message: 'User unauthorised! login as admin' })
-    : done()
+    jwt.verify(jwtcode, secret, (err, token) => {
+      if (err) {
+        return res.status(401)
+          .send({ message: 'Invalid Token, User unauthorised!' });
+      } else if ((token.userRoleId !== 1)) {
+        return res.status(401)
+          .send({ message: 'User unauthorised! login as admin' });
+      }
+      req.token = token;
+      done();
+    }
     );
   }
 };

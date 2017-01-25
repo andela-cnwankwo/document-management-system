@@ -9,14 +9,14 @@ const config = require('../../settings/config.json')[env];
 const db = {};
 const basename = path.basename(module.filename);
 
-const sequelize = (config.use_env_variable)
-  ? new Sequelize(process.env[config.use_env_variable])
-  : new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, config);
+const sequelize = new Sequelize(process.env[config.use_env_variable], config);
 
 fs
   .readdirSync(__dirname)
   .filter(file =>
-    (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
+    (file.indexOf('.') !== 0)
+    && (file !== basename)
+    && (file.slice(-3) === '.js'))
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
     db[model.name] = model;
